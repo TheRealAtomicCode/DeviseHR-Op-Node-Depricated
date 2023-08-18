@@ -13,6 +13,14 @@ OperatorsController.get(
     try {
       const opId = Number(req.decodedUser?.id);
       const user = await prisma.operators.findUnique({
+        select: {
+          id: true,
+          first_name: true,
+          last_name: true,
+          email: true,
+          profile_picture: true,
+          user_role: true,
+        },
         where: { id: opId },
       });
       res.status(200).send({

@@ -2,7 +2,8 @@ import { compare } from 'bcrypt';
 import { prisma, operators } from '../DB/prismaConfig';
 import { sign } from 'jsonwebtoken';
 import client from '../DB/connection';
-import { Prisma } from '@prisma/client';
+import { Prisma, users } from '@prisma/client';
+import verifyAccess from '../Middleware/verify_access';
 
 // * get operator by id
 const getOperatorById = async (id: number) => {
@@ -23,13 +24,6 @@ const findOperatorByCredentials = async (
   });
 
   if (!user) throw new Error('Incorrect Email or Password.');
-
-  if (user.is_terminated)
-    throw new Error('Your Permissions have been Revoked.');
-  if (!user.is_verified)
-    throw new Error(
-      'Please sign into your account with the registration email that was sent to you, please make sure to ckeck the junk and spam folders, if you did not receive it please contact your manager.'
-    );
 
   const isMatch = await compare(password, user.password_hash!);
   if (!isMatch) throw new Error('Incorrect Email or Password');
@@ -104,6 +98,8 @@ const findOperatorAndReplaceRefreshToken = async (
 
   if (!user) throw new Error('Please Authenticate.');
 
+  verifyAccess(user.is_verified, user.is_terminated);
+
   const refreshedUser = await prisma.operators.update({
     where: {
       id,
@@ -120,7 +116,21 @@ const findOperatorAndReplaceRefreshToken = async (
     },
   });
 
-  return refreshedUser;
+  const newToken = await sign(
+    {
+      id: user.id.toString(),
+      userRole: user.user_role,
+      firstName: user.first_name,
+      lastName: user.last_name,
+      email: user.email,
+    },
+    process.env.JWT_SECRET!,
+    {
+      expiresIn: process.env.EXPTIME!,
+    }
+  );
+
+  return { refreshedUser, newRefreshToken, newToken };
 };
 
 export {

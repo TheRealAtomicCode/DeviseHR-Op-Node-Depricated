@@ -7,6 +7,7 @@ import {
 } from '../Services/operator_services';
 import auth from '../Middleware/auth';
 import { AuthenticatedOpRequestI } from '../Types/OperatorRequestType';
+import verifyAccess from '../Middleware/verify_access';
 
 const LogOperatorController = Router();
 
@@ -20,9 +21,14 @@ LogOperatorController.post(
         req.body.password
       );
 
+      verifyAccess(me.is_verified, me.is_terminated);
+
       const { token, refreshToken } = await genarateOperatorAuthToken(
         me
       );
+
+      me.password_hash = 'Not available';
+      me.refresh_tokens = [];
 
       res.status(200).send({
         data: me,
@@ -43,27 +49,26 @@ LogOperatorController.post(
   }
 );
 
-// * login operator
+// * refresh
 LogOperatorController.post(
   '/refresh',
   auth,
   async (req: AuthenticatedOpRequestI, res: Response) => {
     try {
-      await findOperatorAndReplaceRefreshToken(
-        req.userId!,
-        req.decodedUser?.userRole!,
-        req.body.refreshToken!
-      );
+      const { refreshedUser, newRefreshToken, newToken } =
+        await findOperatorAndReplaceRefreshToken(
+          req.userId!,
+          req.decodedUser?.userRole!,
+          req.body.refreshToken!
+        );
 
-      // if (!me) throw new Error('Please Authenticate');
-
-      // const { token, refreshToken } = await genarateOperatorAuthToken(
-      //   me
-      // );
+      refreshedUser.password_hash = 'No Access';
+      refreshedUser.refresh_tokens = [];
 
       res.status(200).send({
-        data: 'me',
-
+        data: refreshedUser,
+        token: newToken,
+        refreshToken: newRefreshToken,
         success: true,
         message: '',
       });
