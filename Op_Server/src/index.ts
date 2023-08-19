@@ -10,6 +10,7 @@ import cors from 'cors';
 // * controllers
 import LogOperatorController from './Controllers/Log_Operator_Controller';
 import OperatorsController from './Controllers/Operators_Controller';
+import AdminOperatorConroller from './Controllers/Admin_Operator_Controllers';
 
 dotenv.config();
 
@@ -21,7 +22,7 @@ const PORT = process.env.PORT || 5000;
 // * operator routers
 app.use('/api/operator-logging', LogOperatorController);
 app.use('/api/operators', OperatorsController);
-app.use('/api/admin-operators', OperatorsController);
+app.use('/api/admin-operators', AdminOperatorConroller);
 
 app.listen(PORT, () => {
   console.log(`Server up and running on port: ${PORT}`);

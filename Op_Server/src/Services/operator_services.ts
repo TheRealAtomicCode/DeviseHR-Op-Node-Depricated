@@ -4,6 +4,7 @@ import { sign } from 'jsonwebtoken';
 import client from '../DB/connection';
 import { Prisma, users } from '@prisma/client';
 import verifyAccess from '../Middleware/verify_access';
+import deleteAllRefreshTokens from '../Functions/delete_add_refresh_tokens';
 
 // * get operator by id
 const getOperatorById = async (id: number) => {
@@ -26,7 +27,16 @@ const findOperatorByCredentials = async (
   if (!user) throw new Error('Incorrect Email or Password.');
 
   const isMatch = await compare(password, user.password_hash!);
-  if (!isMatch) throw new Error('Incorrect Email or Password');
+  if (!isMatch) {
+    await prisma.operators.update({
+      where: { id: user.id },
+      data: {
+        login_attempt: { increment: 1 },
+      },
+    });
+
+    throw new Error('Incorrect Email or Password');
+  }
 
   return user;
 };
@@ -55,12 +65,19 @@ const genarateOperatorAuthToken = async (user: operators) => {
     }
   );
 
+  if (user.refresh_tokens.length > 6) {
+    // * id refresh tokens are above 6 then delete all previous refresh tokens
+    await deleteAllRefreshTokens(user.id);
+  }
+
   const query = {
     where: {
       id: user.id,
     },
     data: {
       refresh_tokens: { push: refreshToken },
+      last_login_time: new Date(),
+      last_active_time: new Date(),
     },
   };
 
@@ -113,6 +130,7 @@ const findOperatorAndReplaceRefreshToken = async (
           newRefreshToken,
         ],
       },
+      last_active_time: new Date(),
     },
   });
 
@@ -133,9 +151,30 @@ const findOperatorAndReplaceRefreshToken = async (
   return { refreshedUser, newRefreshToken, newToken };
 };
 
+const updateVerificationToken = async (
+  operatorId: number,
+  verificationCode: string
+) => {
+  const user = await prisma.operators.update({
+    where: { id: operatorId },
+    data: {
+      verfication_code: verificationCode,
+    },
+    select: {
+      id: true,
+      first_name: true,
+      last_name: true,
+      email: true,
+    },
+  });
+
+  return user;
+};
+
 export {
   getOperatorById,
   findOperatorByCredentials,
   genarateOperatorAuthToken,
   findOperatorAndReplaceRefreshToken,
+  updateVerificationToken,
 };

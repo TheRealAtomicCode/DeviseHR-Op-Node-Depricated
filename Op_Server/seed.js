@@ -35,8 +35,8 @@ async function seed() {
   client.connect();
   async function insertUser(user) {
     const query = `
-      INSERT INTO Operators (first_name, last_name, email, password_hash, profile_picture, is_terminated, user_role, refresh_tokens, is_verified)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      INSERT INTO Operators (first_name, last_name, email, password_hash, profile_picture, is_terminated, user_role, refresh_tokens, is_verified, added_by)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
     `;
 
     const values = [
@@ -49,6 +49,7 @@ async function seed() {
       user.user_role,
       user.refresh_tokens,
       true,
+      1,
     ];
 
     try {

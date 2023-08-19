@@ -1,42 +1,48 @@
 import { Response, Router } from 'express';
 import { AuthenticatedOpRequestI } from '../Types/OperatorRequestType';
 import auth from '../Middleware/auth';
+import { isAdmin } from '../Middleware/authorization';
+import {
+  generateVerificationCode,
+  sendOperatorVerificationCode,
+} from '../Functions/node_mailer';
+import { createOperator } from '../Services/admin_operator_services';
+import { updateVerificationToken } from '../Services/operator_services';
 
 const AdminOperatorConroller = Router();
 
-// * Create agent
+// * Create Operator
 AdminOperatorConroller.post(
-  '/create-agent',
+  '/create-operator',
   auth,
+  isAdmin,
   async (req: AuthenticatedOpRequestI, res: Response) => {
     try {
-      // const agent = await createAgent(
-      // 	req.body.firstName,
-      // 	req.body.lastName,
-      // 	req.body.email,
-      // 	req.body.admin
-      // );
+      const newOperator = await createOperator(
+        req.body.firstName,
+        req.body.lastName,
+        req.body.email,
+        req.body.role,
+        req.userId!
+      );
 
-      // if (req.body.registerAgent) {
-      // 	const verificationCode = generateVerificationCode();
-      // 	const updatedAgent = await updateVerificationToken(
-      // 		agent.id,
-      // 		verificationCode,
-      // 		true,
-      // 		0
-      // 	);
+      if (req.body.sendRegistration) {
+        const verificationCode = generateVerificationCode();
+        const updatedOperator = await updateVerificationToken(
+          newOperator.id,
+          verificationCode
+        );
 
-      // 	await sendAgentVerificationCode(
-      // 		updatedAgent.id,
-      // 		updatedAgent.email,
-      // 		updatedAgent.firstName,
-      // 		updatedAgent.lastName,
-      // 		verificationCode
-      // 	);
-      // }
-      // ? no need to filterUser as password is by default null
+        await sendOperatorVerificationCode(
+          updatedOperator.id,
+          updatedOperator.email,
+          updatedOperator.first_name,
+          updatedOperator.last_name,
+          verificationCode
+        );
+      }
       res.status(200).send({
-        data: 'user',
+        data: newOperator,
         success: true,
         message: '',
       });
@@ -49,3 +55,5 @@ AdminOperatorConroller.post(
     }
   }
 );
+
+export default AdminOperatorConroller;

@@ -1,16 +1,15 @@
 interface Operator {
-    id: number;
-    first_name: string;
-    last_name: string;
-    email: string;
-    profile_picture?: string;
-    is_terminated: boolean;
-    is_verified: boolean;
-    user_role: string;
-    created_at: string;
-    updated_at: string;
-    refresh_tokens: any[];
-  }
+  id: true;
+  first_name: true;
+  last_name: true;
+  email: true;
+  profile_picture?: string;
+  user_role: true;
+  created_at: true;
+  updated_at: true;
+  is_terminated: true;
+  is_verified: true;
+  added_by: true;
+}
 
-  export default Operator;
-  
+export default Operator;

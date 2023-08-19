@@ -11,14 +11,19 @@ CREATE TABLE Operators (
   first_name VARCHAR(20) NOT NULL,
   last_name VARCHAR(20) NOT NULL,
   email VARCHAR(60) NOT NULL UNIQUE,
-  password_hash VARCHAR(60) NOT NULL,
+  password_hash VARCHAR(60),
   profile_picture TEXT,
   is_terminated BOOLEAN NOT NULL DEFAULT false,
   is_verified BOOLEAN NOT NULL DEFAULT false,
   user_role user_role_enum NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  refresh_tokens TEXT[] DEFAULT ARRAY[]::TEXT[]
+  refresh_tokens TEXT[] DEFAULT ARRAY[]::TEXT[],
+  added_by INT NOT NULL,
+  verfication_code VARCHAR(10),
+  login_attempt SMALLINT DEFAULT 0,
+  last_login_time TIMESTAMP,
+  last_active_time TIMESTAMP
 );
 
 CREATE TABLE Notes (
@@ -60,7 +65,7 @@ CREATE TABLE Users (
   last_name VARCHAR(20) NOT NULL,
   title VARCHAR(20),
   email VARCHAR(60) NOT NULL UNIQUE,
-  password_hash VARCHAR(60) NOT NULL,
+  password_hash VARCHAR(60),
   date_of_birth DATE,
   profile_picture TEXT,
   is_terminated BOOLEAN NOT NULL DEFAULT false,
@@ -78,5 +83,10 @@ CREATE TABLE Users (
   enable_birthday_reminder BOOLEAN NOT NULL DEFAULT false,
   enable_receive_requests BOOLEAN NOT NULL DEFAULT false,
   enable_receive_requests_from_my_department BOOLEAN NOT NULL DEFAULT false,
-  contracted_leave_start_date DATE
+  contracted_leave_start_date DATE,
+  added_by INT NOT NULL,
+  verfication_code VARCHAR(10),
+  login_attempt SMALLINT DEFAULT 0, 
+  last_login_time TIMESTAMP,
+  last_active_time TIMESTAMP
 );

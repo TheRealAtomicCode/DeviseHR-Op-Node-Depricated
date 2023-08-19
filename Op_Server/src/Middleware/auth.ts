@@ -18,7 +18,6 @@ const auth = async (
 
     req.decodedUser = decode;
     req.userId = Number(decode.id);
-    req.role = Number(decode.userRole);
 
     next();
   } catch (err: any) {
