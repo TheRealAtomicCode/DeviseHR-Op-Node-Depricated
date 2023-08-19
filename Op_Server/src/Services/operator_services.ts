@@ -26,8 +26,16 @@ const findOperatorByCredentials = async (
 
   if (!user) throw new Error('Incorrect Email or Password.');
 
+  verifyAccess(
+    user.is_verified,
+    user.is_terminated,
+    user.login_attempt!
+  );
+
   const isMatch = await compare(password, user.password_hash!);
+
   if (!isMatch) {
+    // * if user failed to login multiple times then the login attept will increment
     await prisma.operators.update({
       where: { id: user.id },
       data: {
@@ -36,6 +44,14 @@ const findOperatorByCredentials = async (
     });
 
     throw new Error('Incorrect Email or Password');
+  } else {
+    // * if password was correct, then login attept will go down to 0
+    await prisma.operators.update({
+      where: { id: user.id },
+      data: {
+        login_attempt: 0,
+      },
+    });
   }
 
   return user;
@@ -115,7 +131,11 @@ const findOperatorAndReplaceRefreshToken = async (
 
   if (!user) throw new Error('Please Authenticate.');
 
-  verifyAccess(user.is_verified, user.is_terminated);
+  verifyAccess(
+    user.is_verified,
+    user.is_terminated,
+    user.login_attempt!
+  );
 
   const refreshedUser = await prisma.operators.update({
     where: {

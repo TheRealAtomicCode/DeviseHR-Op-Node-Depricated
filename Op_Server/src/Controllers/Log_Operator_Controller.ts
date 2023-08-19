@@ -21,8 +21,6 @@ LogOperatorController.post(
         req.body.password
       );
 
-      verifyAccess(me.is_verified, me.is_terminated);
-
       const { token, refreshToken } = await genarateOperatorAuthToken(
         me
       );
