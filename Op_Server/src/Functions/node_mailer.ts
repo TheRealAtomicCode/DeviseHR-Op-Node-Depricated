@@ -32,7 +32,7 @@ export async function sendOperatorVerificationCode(
       html: `
       <b>Dear ${firstName} ${lastName}, Your verification code is: ${code}</b>
       <p>Please follow the link bellow to register your account.</p>
-      <a href="http://localhost:5000/agent-logging/register-me?agentId=${operatorId}&code=${code}">Register your account</a>
+      <a href="http://localhost:5000/registration/register?operatorId=${operatorId}&code=${code}">Register your account</a>
       `,
     });
 

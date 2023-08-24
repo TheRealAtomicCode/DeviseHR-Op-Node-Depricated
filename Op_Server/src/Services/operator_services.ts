@@ -1,10 +1,12 @@
-import { compare } from 'bcrypt';
+import { compare, hash } from 'bcrypt';
 import { prisma, operators } from '../DB/prismaConfig';
-import { sign } from 'jsonwebtoken';
+import { sign, verify } from 'jsonwebtoken';
 import client from '../DB/connection';
 import { Prisma, users } from '@prisma/client';
 import verifyAccess from '../Middleware/verify_access';
 import deleteAllRefreshTokens from '../Functions/delete_add_refresh_tokens';
+import { DecodedVerificationToken } from '../Types/GeneralTypes';
+import { isStrongPassword } from '../Helpers/stringValidation';
 
 // * get operator by id
 const getOperatorById = async (id: number) => {

@@ -85,8 +85,10 @@ CREATE TABLE Users (
   enable_receive_requests_from_my_department BOOLEAN NOT NULL DEFAULT false,
   contracted_leave_start_date DATE,
   added_by INT NOT NULL,
-  verfication_code VARCHAR(10),
+  verification_code VARCHAR(10),
   login_attempt SMALLINT DEFAULT 0, 
   last_login_time TIMESTAMP,
-  last_active_time TIMESTAMP
+  last_active_time TIMESTAMP,
+  company_id INTEGER,
+  FOREIGN KEY (company_id) REFERENCES Companies (id)
 );

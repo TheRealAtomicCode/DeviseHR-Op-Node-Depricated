@@ -9,6 +9,10 @@ const createOperator = async (
   myId: number
 ) => {
   try {
+    email = email.toLowerCase().trim();
+    firstName = firstName.trim();
+    lastName = lastName.trim();
+
     const newUser = await prisma.operators.create({
       data: {
         first_name: firstName,

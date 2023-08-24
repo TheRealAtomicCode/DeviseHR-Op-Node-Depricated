@@ -29,6 +29,7 @@ model companies {
   created_at                                   DateTime @default(now()) @db.Timestamp(6)
   updated_at                                   DateTime @default(now()) @db.Timestamp(6)
   is_special_client                            Boolean  @default(false)
+  users                                        users[]
 }
 
 model notes {
@@ -62,35 +63,37 @@ model operators {
 }
 
 model users {
-  id                                         Int       @id @default(autoincrement())
-  first_name                                 String    @db.VarChar(20)
-  last_name                                  String    @db.VarChar(20)
-  title                                      String?   @db.VarChar(20)
-  email                                      String    @unique @db.VarChar(60)
-  password_hash                              String?   @db.VarChar(60)
-  date_of_birth                              DateTime? @db.Date
+  id                                         Int        @id @default(autoincrement())
+  first_name                                 String     @db.VarChar(20)
+  last_name                                  String     @db.VarChar(20)
+  title                                      String?    @db.VarChar(20)
+  email                                      String     @unique @db.VarChar(60)
+  password_hash                              String?    @db.VarChar(60)
+  date_of_birth                              DateTime?  @db.Date
   profile_picture                            String?
-  is_terminated                              Boolean   @default(false)
-  is_verified                                Boolean   @default(false)
-  created_at                                 DateTime  @default(now()) @db.Timestamp(6)
-  updated_at                                 DateTime  @default(now()) @db.Timestamp(6)
-  refresh_tokens                             String[]  @default([])
+  is_terminated                              Boolean    @default(false)
+  is_verified                                Boolean    @default(false)
+  created_at                                 DateTime   @default(now()) @db.Timestamp(6)
+  updated_at                                 DateTime   @default(now()) @db.Timestamp(6)
+  refresh_tokens                             String[]   @default([])
   user_type                                  Int?
-  ni_no                                      String?   @db.VarChar(60)
-  drivers_licence_number                     String?   @db.VarChar(60)
-  drivers_licence_expiration_date            DateTime? @db.Date
-  passport_number                            String?   @db.VarChar(60)
-  passport_expiration_date                   DateTime? @db.Date
-  enable_reminders                           Boolean   @default(false)
-  enable_birthday_reminder                   Boolean   @default(false)
-  enable_receive_requests                    Boolean   @default(false)
-  enable_receive_requests_from_my_department Boolean   @default(false)
-  contracted_leave_start_date                DateTime? @db.Date
+  ni_no                                      String?    @db.VarChar(60)
+  drivers_licence_number                     String?    @db.VarChar(60)
+  drivers_licence_expiration_date            DateTime?  @db.Date
+  passport_number                            String?    @db.VarChar(60)
+  passport_expiration_date                   DateTime?  @db.Date
+  enable_reminders                           Boolean    @default(false)
+  enable_birthday_reminder                   Boolean    @default(false)
+  enable_receive_requests                    Boolean    @default(false)
+  enable_receive_requests_from_my_department Boolean    @default(false)
+  contracted_leave_start_date                DateTime?  @db.Date
   added_by                                   Int
-  verfication_code                           String?   @db.VarChar(10)
-  login_attempt                              Int?      @default(0) @db.SmallInt
-  last_login_time                            DateTime? @db.Timestamp(6)
-  last_active_time                           DateTime? @db.Timestamp(6)
+  verification_code                          String?    @db.VarChar(10)
+  login_attempt                              Int?       @default(0) @db.SmallInt
+  last_login_time                            DateTime?  @db.Timestamp(6)
+  last_active_time                           DateTime?  @db.Timestamp(6)
+  company_id                                 Int?
+  companies                                  companies? @relation(fields: [company_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 enum user_role_enum {

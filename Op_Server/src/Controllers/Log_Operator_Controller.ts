@@ -1,13 +1,11 @@
 import { Request, Response, Router } from 'express';
 import {
-  getOperatorById,
   findOperatorByCredentials,
   genarateOperatorAuthToken,
   findOperatorAndReplaceRefreshToken,
 } from '../Services/operator_services';
 import auth from '../Middleware/auth';
 import { AuthenticatedOpRequestI } from '../Types/OperatorRequestType';
-import verifyAccess from '../Middleware/verify_access';
 
 const LogOperatorController = Router();
 
@@ -25,6 +23,7 @@ LogOperatorController.post(
         me
       );
 
+      // * what the end user receives, NOT ACTUALLY DELETING THE TOKENS
       me.password_hash = 'Not available';
       me.refresh_tokens = [];
 
@@ -81,30 +80,5 @@ LogOperatorController.post(
     }
   }
 );
-
-// // * regester my account step 1
-// LogOperatorController.get(
-//   '/register',
-//   async (req: Request, res: Response) => {
-//     try {
-//       const operator = await getAndCheckRegistrationProfile(
-//         req.body.operatorId,
-//         req.body.verificationCode
-//       );
-
-//       // res.status(200).render('registeration', {
-//       //   firstName: agent?.firstName,
-//       //   lastName: agent?.lastName,
-//       //   email: agent?.email,
-//       //   id: agent?.id,
-//       //   verificationCode: verificationCode,
-//       //   queriesExist,
-//       // });
-//     } catch (err: any) {
-//       if (isEmptyObject(err)) res.status(400).send(err.message);
-//       else res.status(400).send(err);
-//     }
-//   }
-// );
 
 export default LogOperatorController;
