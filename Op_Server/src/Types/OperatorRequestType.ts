@@ -6,9 +6,14 @@ export interface AuthenticatedOpRequestI extends Request {
   userId?: number;
 }
 
-export interface updateOperatoRequestBody {
+export interface updateOperatorRequestBody {
   opId: Number;
   firstName: string | null;
   lastName: string | null;
   email: string | null;
+}
+
+export interface updateOperatorRoleRequestBody {
+  opId: Number;
+  role: 'admin' | 'manager' | 'employee';
 }

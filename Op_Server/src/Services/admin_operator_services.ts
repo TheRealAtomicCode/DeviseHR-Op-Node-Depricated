@@ -1,7 +1,11 @@
 import { prisma } from '../DB/prismaConfig';
 import { UserRole } from '../Types/GeneralTypes';
-import { updateOperatoRequestBody } from '../Types/OperatorRequestType';
+import {
+  updateOperatorRequestBody,
+  updateOperatorRoleRequestBody,
+} from '../Types/OperatorRequestType';
 
+// * Create operator
 const createOperator = async (
   firstName: string,
   lastName: string,
@@ -42,8 +46,41 @@ const createOperator = async (
   }
 };
 
+// * edit operator
+const updateOperatorRole = async (
+  reqBody: updateOperatorRoleRequestBody,
+  myId: number
+) => {
+  try {
+    const editedUser = await prisma.operators.update({
+      where: {
+        id: Number(reqBody?.opId),
+      },
+      data: {
+        user_role: reqBody.role,
+        edited_by: myId,
+        updated_at: new Date(),
+      },
+      select: {
+        id: true,
+        first_name: true,
+        last_name: true,
+        user_role: true,
+        email: true,
+        edited_by: true,
+        updated_at: true,
+      },
+    });
+
+    return editedUser;
+  } catch {
+    throw new Error('failed to update the users details');
+  }
+};
+
+// * edit operator role
 const updateOperatorDetails = async (
-  reqBody: updateOperatoRequestBody,
+  reqBody: updateOperatorRequestBody,
   myId: number
 ) => {
   try {
@@ -87,8 +124,8 @@ const updateOperatorDetails = async (
 
     return editedUser;
   } catch {
-    throw new Error('Email already exists.');
+    throw new Error('Failed to update the users permission level');
   }
 };
 
-export { createOperator, updateOperatorDetails };
+export { createOperator, updateOperatorDetails, updateOperatorRole };

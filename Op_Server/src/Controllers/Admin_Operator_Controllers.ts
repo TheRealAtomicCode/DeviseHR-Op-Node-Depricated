@@ -9,6 +9,7 @@ import {
 import {
   createOperator,
   updateOperatorDetails,
+  updateOperatorRole,
 } from '../Services/admin_operator_services';
 import { updateVerificationToken } from '../Services/operator_services';
 
@@ -67,6 +68,33 @@ AdminOperatorConroller.patch(
   async (req: AuthenticatedOpRequestI, res: Response) => {
     try {
       const updatedOperator = await updateOperatorDetails(
+        req.body,
+        req.userId!
+      );
+
+      res.status(201).send({
+        data: updatedOperator,
+        success: false,
+        message: null,
+      });
+    } catch (err: any) {
+      res.status(400).send({
+        data: null,
+        success: false,
+        message: err.message,
+      });
+    }
+  }
+);
+
+// * Edit User role
+AdminOperatorConroller.patch(
+  '/edit-role',
+  auth,
+  isAdmin,
+  async (req: AuthenticatedOpRequestI, res: Response) => {
+    try {
+      const updatedOperator = await updateOperatorRole(
         req.body,
         req.userId!
       );
