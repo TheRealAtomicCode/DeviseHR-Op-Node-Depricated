@@ -79,4 +79,44 @@ const createPassword = async (
   return { success: 'password updated' };
 };
 
-export { getAndCheckRegistrationProfile, createPassword };
+const logMeOut = async (myId: number, refreshToken: string) => {
+  const me = await prisma.operators.findUnique({
+    where: {
+      id: myId,
+    },
+    select: {
+      refresh_tokens: true,
+    },
+  });
+
+  const filteredTokens = me?.refresh_tokens.filter(
+    (token) => token != refreshToken
+  );
+
+  await prisma.operators.update({
+    where: {
+      id: myId,
+    },
+    data: {
+      refresh_tokens: filteredTokens || [],
+    },
+  });
+};
+
+const logMeOutAllDevices = async (myId: number) => {
+  await prisma.operators.update({
+    where: {
+      id: myId,
+    },
+    data: {
+      refresh_tokens: [],
+    },
+  });
+};
+
+export {
+  getAndCheckRegistrationProfile,
+  createPassword,
+  logMeOut,
+  logMeOutAllDevices,
+};

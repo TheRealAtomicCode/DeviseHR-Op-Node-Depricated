@@ -6,6 +6,10 @@ import {
 } from '../Services/operator_services';
 import auth from '../Middleware/auth';
 import { AuthenticatedOpRequestI } from '../Types/OperatorRequestType';
+import {
+  logMeOut,
+  logMeOutAllDevices,
+} from '../Services/register_operator_services';
 
 const LogOperatorController = Router();
 
@@ -66,6 +70,56 @@ LogOperatorController.post(
         data: refreshedUser,
         token: newToken,
         refreshToken: newRefreshToken,
+        success: true,
+        message: '',
+      });
+    } catch (err: any) {
+      res.status(400).send({
+        data: null,
+        token: null,
+        refreshToken: null,
+        success: false,
+        message: err.message,
+      });
+    }
+  }
+);
+
+// * logout operator
+LogOperatorController.patch(
+  '/logout',
+  auth,
+  async (req: AuthenticatedOpRequestI, res: Response) => {
+    try {
+      await logMeOut(req.userId!, req.body.refreshToken);
+
+      res.status(200).send({
+        data: 'You have logged out successfully',
+        success: true,
+        message: '',
+      });
+    } catch (err: any) {
+      res.status(400).send({
+        data: null,
+        token: null,
+        refreshToken: null,
+        success: false,
+        message: err.message,
+      });
+    }
+  }
+);
+
+// * logout operator
+LogOperatorController.get(
+  '/logout-all',
+  auth,
+  async (req: AuthenticatedOpRequestI, res: Response) => {
+    try {
+      await logMeOutAllDevices(req.userId!);
+
+      res.status(200).send({
+        data: 'You have logged out all devices successfully',
         success: true,
         message: '',
       });
