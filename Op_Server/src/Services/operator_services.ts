@@ -22,6 +22,8 @@ const findOperatorByCredentials = async (
   email: string,
   password: string
 ) => {
+  email = email.trim().toLocaleLowerCase();
+
   const user = await prisma.operators.findUnique({
     where: { email },
   });

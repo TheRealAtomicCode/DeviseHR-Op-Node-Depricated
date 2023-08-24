@@ -55,6 +55,7 @@ model operators {
   updated_at       DateTime       @default(now()) @db.Timestamp(6)
   refresh_tokens   String[]       @default([])
   added_by         Int
+  edited_by        Int?
   verfication_code String?        @db.VarChar(10)
   login_attempt    Int?           @default(0) @db.SmallInt
   last_login_time  DateTime?      @db.Timestamp(6)
@@ -88,6 +89,7 @@ model users {
   enable_receive_requests_from_my_department Boolean    @default(false)
   contracted_leave_start_date                DateTime?  @db.Date
   added_by                                   Int
+  edited_by                                  Int?
   verification_code                          String?    @db.VarChar(10)
   login_attempt                              Int?       @default(0) @db.SmallInt
   last_login_time                            DateTime?  @db.Timestamp(6)

@@ -6,7 +6,10 @@ import {
   generateVerificationCode,
   sendOperatorVerificationCode,
 } from '../Functions/node_mailer';
-import { createOperator } from '../Services/admin_operator_services';
+import {
+  createOperator,
+  updateOperatorDetails,
+} from '../Services/admin_operator_services';
 import { updateVerificationToken } from '../Services/operator_services';
 
 const AdminOperatorConroller = Router();
@@ -48,6 +51,33 @@ AdminOperatorConroller.post(
       });
     } catch (err: any) {
       res.status(200).send({
+        data: null,
+        success: false,
+        message: err.message,
+      });
+    }
+  }
+);
+
+// * Edit User details
+AdminOperatorConroller.patch(
+  '/edit-operator',
+  auth,
+  isAdmin,
+  async (req: AuthenticatedOpRequestI, res: Response) => {
+    try {
+      const updatedOperator = await updateOperatorDetails(
+        req.body,
+        req.userId!
+      );
+
+      res.status(201).send({
+        data: updatedOperator,
+        success: false,
+        message: null,
+      });
+    } catch (err: any) {
+      res.status(400).send({
         data: null,
         success: false,
         message: err.message,
