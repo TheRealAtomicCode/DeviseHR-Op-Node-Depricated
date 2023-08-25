@@ -128,4 +128,49 @@ const updateOperatorDetails = async (
   }
 };
 
-export { createOperator, updateOperatorDetails, updateOperatorRole };
+const getAllOperators = async () => {
+  const operators = await prisma.operators.findMany({
+    select: {
+      id: true,
+      first_name: true,
+      last_name: true,
+      email: true,
+      user_role: true,
+      profile_picture: true,
+      is_verified: true,
+      updated_at: true,
+    },
+  });
+
+  return operators;
+};
+
+const getOperatorDetails = async (operatorId: number) => {
+  const operator = await prisma.operators.findUniqueOrThrow({
+    where: { id: operatorId },
+    select: {
+      id: true,
+      first_name: true,
+      last_name: true,
+      email: true,
+      user_role: true,
+      profile_picture: true,
+      is_terminated: true,
+      is_verified: true,
+      updated_at: true,
+      login_attempt: true,
+      last_login_time: true,
+      last_active_time: true,
+    },
+  });
+
+  return operator;
+};
+
+export {
+  createOperator,
+  updateOperatorDetails,
+  updateOperatorRole,
+  getAllOperators,
+  getOperatorDetails,
+};

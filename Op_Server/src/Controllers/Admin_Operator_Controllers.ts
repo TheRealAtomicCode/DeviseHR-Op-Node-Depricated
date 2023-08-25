@@ -8,6 +8,8 @@ import {
 } from '../Functions/node_mailer';
 import {
   createOperator,
+  getAllOperators,
+  getOperatorDetails,
   updateOperatorDetails,
   updateOperatorRole,
 } from '../Services/admin_operator_services';
@@ -45,6 +47,7 @@ AdminOperatorConroller.post(
           verificationCode
         );
       }
+
       res.status(200).send({
         data: newOperator,
         success: true,
@@ -52,6 +55,56 @@ AdminOperatorConroller.post(
       });
     } catch (err: any) {
       res.status(200).send({
+        data: null,
+        success: false,
+        message: err.message,
+      });
+    }
+  }
+);
+
+// * View operators
+AdminOperatorConroller.get(
+  '/operators',
+  auth,
+  isAdmin,
+  async (req: AuthenticatedOpRequestI, res: Response) => {
+    try {
+      const operators = await getAllOperators();
+
+      res.status(200).send({
+        data: operators,
+        success: false,
+        message: null,
+      });
+    } catch (err: any) {
+      res.status(400).send({
+        data: null,
+        success: false,
+        message: err.message,
+      });
+    }
+  }
+);
+
+// * View operator details
+AdminOperatorConroller.get(
+  '/operators/:operatorId',
+  auth,
+  isAdmin,
+  async (req: AuthenticatedOpRequestI, res: Response) => {
+    try {
+      const operators = await getOperatorDetails(
+        Number(req.params.operatorId)
+      );
+
+      res.status(200).send({
+        data: operators,
+        success: false,
+        message: null,
+      });
+    } catch (err: any) {
+      res.status(400).send({
         data: null,
         success: false,
         message: err.message,
