@@ -1,14 +1,14 @@
-import { prisma } from '../DB/prismaConfig';
+import { prisma } from '../../DB/prismaConfig';
 import {
   generateVerificationCode,
   sendOperatorForgetPassword,
   sendOperatorRagistration,
-} from '../Functions/node_mailer';
-import { UserRole } from '../Types/GeneralTypes';
+} from '../../Functions/node_mailer';
+import { UserRole } from '../../Types/GeneralTypes';
 import {
   updateOperatorRequestBody,
   updateOperatorRoleRequestBody,
-} from '../Types/OperatorRequestType';
+} from '../../Types/OperatorRequestType';
 
 // * Create operator
 const createOperator = async (

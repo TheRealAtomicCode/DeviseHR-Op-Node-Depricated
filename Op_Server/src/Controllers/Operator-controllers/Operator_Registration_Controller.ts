@@ -1,9 +1,9 @@
 import { Request, Response, Router } from 'express';
-import { isEmptyObject } from '../Helpers/isEmptyObject';
+import { isEmptyObject } from '../../Helpers/isEmptyObject';
 import {
   createPassword,
   getAndCheckRegistrationProfile,
-} from '../Services/register_operator_services';
+} from '../../Services/Operator-Services/register_operator_services';
 
 const OperatorRegistrationController = Router();
 

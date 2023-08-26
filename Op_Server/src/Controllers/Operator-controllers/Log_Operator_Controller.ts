@@ -3,13 +3,13 @@ import {
   findOperatorByCredentials,
   genarateOperatorAuthToken,
   findOperatorAndReplaceRefreshToken,
-} from '../Services/operator_services';
-import auth from '../Middleware/auth';
-import { AuthenticatedOpRequestI } from '../Types/OperatorRequestType';
+} from '../../Services/Operator-Services/operator_services';
+import auth from '../../Middleware/auth';
+import { AuthenticatedOpRequestI } from '../../Types/OperatorRequestType';
 import {
   logMeOut,
   logMeOutAllDevices,
-} from '../Services/register_operator_services';
+} from '../../Services/Operator-Services/register_operator_services';
 
 const LogOperatorController = Router();
 

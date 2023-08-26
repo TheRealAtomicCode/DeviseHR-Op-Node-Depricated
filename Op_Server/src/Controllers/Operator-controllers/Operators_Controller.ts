@@ -1,7 +1,7 @@
 import { Router, Response } from 'express';
-import { AuthenticatedOpRequestI } from '../Types/OperatorRequestType';
-import auth from '../Middleware/auth';
-import { prisma } from '../DB/prismaConfig';
+import { AuthenticatedOpRequestI } from '../../Types/OperatorRequestType';
+import auth from '../../Middleware/auth';
+import { prisma } from '../../DB/prismaConfig';
 
 const OperatorsController = Router();
 

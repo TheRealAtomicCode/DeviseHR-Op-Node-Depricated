@@ -1,7 +1,7 @@
 import { verify } from 'jsonwebtoken';
-import { prisma } from '../DB/prismaConfig';
-import { isStrongPassword } from '../Helpers/stringValidation';
-import { DecodedVerificationToken } from '../Types/GeneralTypes';
+import { prisma } from '../../DB/prismaConfig';
+import { isStrongPassword } from '../../Helpers/stringValidation';
+import { DecodedVerificationToken } from '../../Types/GeneralTypes';
 import { hash } from 'bcrypt';
 
 const getAndCheckRegistrationProfile = async (

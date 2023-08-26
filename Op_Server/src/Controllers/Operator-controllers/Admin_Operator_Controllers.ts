@@ -1,11 +1,11 @@
 import { Response, Router } from 'express';
-import { AuthenticatedOpRequestI } from '../Types/OperatorRequestType';
-import auth from '../Middleware/auth';
-import { isAdmin } from '../Middleware/authorization';
+import { AuthenticatedOpRequestI } from '../../Types/OperatorRequestType';
+import auth from '../../Middleware/auth';
+import { isAdmin } from '../../Middleware/authorization';
 import {
   generateVerificationCode,
   sendOperatorRagistration,
-} from '../Functions/node_mailer';
+} from '../../Functions/node_mailer';
 import {
   createOperator,
   getAllOperators,
@@ -13,9 +13,9 @@ import {
   forgotPasswordService,
   updateOperatorDetails,
   updateOperatorRole,
-} from '../Services/admin_operator_services';
-import { updateVerificationToken } from '../Services/operator_services';
-import noSelfOperation from '../Middleware/noSelfOperation';
+} from '../../Services/Operator-Services/admin_operator_services';
+import { updateVerificationToken } from '../../Services/Operator-Services/operator_services';
+import noSelfOperation from '../../Middleware/noSelfOperation';
 
 const AdminOperatorConroller = Router();
 
