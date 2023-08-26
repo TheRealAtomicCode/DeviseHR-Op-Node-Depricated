@@ -65,6 +65,42 @@ AdminOperatorConroller.post(
   }
 );
 
+// * Send Regstration Code to Operator
+AdminOperatorConroller.get(
+  '/send-registration/:opId',
+  auth,
+  isAdmin,
+  async (req: AuthenticatedOpRequestI, res: Response) => {
+    try {
+      const verificationCode = generateVerificationCode();
+      const updatedOperator = await updateVerificationToken(
+        Number(req.params.opId),
+        verificationCode
+      );
+
+      await sendOperatorRagistration(
+        updatedOperator.id,
+        updatedOperator.email,
+        updatedOperator.first_name,
+        updatedOperator.last_name,
+        verificationCode
+      );
+
+      res.status(200).send({
+        data: 'Registration code has been successfully sent',
+        success: true,
+        message: '',
+      });
+    } catch (err: any) {
+      res.status(200).send({
+        data: null,
+        success: false,
+        message: err.message,
+      });
+    }
+  }
+);
+
 // * View operators
 AdminOperatorConroller.get(
   '/operators',
