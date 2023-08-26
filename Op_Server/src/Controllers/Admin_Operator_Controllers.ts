@@ -4,16 +4,18 @@ import auth from '../Middleware/auth';
 import { isAdmin } from '../Middleware/authorization';
 import {
   generateVerificationCode,
-  sendOperatorVerificationCode,
+  sendOperatorRagistration,
 } from '../Functions/node_mailer';
 import {
   createOperator,
   getAllOperators,
   getOperatorDetails,
+  forgotPasswordService,
   updateOperatorDetails,
   updateOperatorRole,
 } from '../Services/admin_operator_services';
 import { updateVerificationToken } from '../Services/operator_services';
+import noSelfOperation from '../Middleware/noSelfOperation';
 
 const AdminOperatorConroller = Router();
 
@@ -39,7 +41,7 @@ AdminOperatorConroller.post(
           verificationCode
         );
 
-        await sendOperatorVerificationCode(
+        await sendOperatorRagistration(
           updatedOperator.id,
           updatedOperator.email,
           updatedOperator.first_name,
@@ -154,6 +156,32 @@ AdminOperatorConroller.patch(
 
       res.status(201).send({
         data: updatedOperator,
+        success: false,
+        message: null,
+      });
+    } catch (err: any) {
+      res.status(400).send({
+        data: null,
+        success: false,
+        message: err.message,
+      });
+    }
+  }
+);
+
+// * Edit User role
+AdminOperatorConroller.patch(
+  '/reset-operator-pswd',
+  auth,
+  isAdmin,
+  async (req: AuthenticatedOpRequestI, res: Response) => {
+    try {
+      noSelfOperation(req.userId!, req.body.opId);
+
+      const operator = await forgotPasswordService(req.body.opId);
+
+      res.status(201).send({
+        data: `A Verifivation code has been send to ${operator.email}`,
         success: false,
         message: null,
       });

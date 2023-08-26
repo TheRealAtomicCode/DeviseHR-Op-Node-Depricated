@@ -1,4 +1,9 @@
 import { prisma } from '../DB/prismaConfig';
+import {
+  generateVerificationCode,
+  sendOperatorForgetPassword,
+  sendOperatorRagistration,
+} from '../Functions/node_mailer';
 import { UserRole } from '../Types/GeneralTypes';
 import {
   updateOperatorRequestBody,
@@ -167,10 +172,51 @@ const getOperatorDetails = async (operatorId: number) => {
   return operator;
 };
 
+const forgotPasswordService = async (operatorId: number) => {
+  const verificationCode = generateVerificationCode();
+
+  const operator = await prisma.operators.findUniqueOrThrow({
+    where: { id: operatorId },
+    select: {
+      is_verified: true,
+      id: true,
+      email: true,
+      first_name: true,
+      last_name: true,
+    },
+  });
+
+  if (!operator.is_verified)
+    throw new Error(
+      'Can not reset password for users who are not registered'
+    );
+
+  await prisma.operators.update({
+    where: {
+      id: operatorId,
+    },
+    data: {
+      verfication_code: verificationCode,
+      updated_at: new Date(),
+    },
+  });
+
+  await sendOperatorForgetPassword(
+    operator.id,
+    operator.email,
+    operator.first_name,
+    operator.last_name,
+    verificationCode
+  );
+
+  return operator;
+};
+
 export {
   createOperator,
   updateOperatorDetails,
   updateOperatorRole,
   getAllOperators,
   getOperatorDetails,
+  forgotPasswordService,
 };

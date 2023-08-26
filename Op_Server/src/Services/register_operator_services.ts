@@ -27,11 +27,6 @@ const getAndCheckRegistrationProfile = async (
   if (!user || !user.verfication_code || user.is_terminated)
     throw new Error('Invalid Request');
 
-  // const decode = (await verify(
-  //   user.verfication_code,
-  //   process.env.JWT_SECRET!
-  // )) as DecodedVerificationToken;
-
   if (user.verfication_code !== code)
     throw new Error('Invalid request.');
 
@@ -41,7 +36,8 @@ const getAndCheckRegistrationProfile = async (
 const createPassword = async (
   id: number,
   password: string,
-  code: string
+  code: string,
+  checkIsVerifies: boolean
 ) => {
   const user = await prisma.operators.findUniqueOrThrow({
     where: {
@@ -49,12 +45,13 @@ const createPassword = async (
     },
   });
 
-  if (!user || user?.is_terminated || user.is_verified)
+  if (!user || user?.is_terminated)
     throw new Error('Invalid request');
-  // const decode = (await verify(
-  //   user?.verification_code!,
-  //   process.env.JWT_SECRET!
-  // )) as DecodedVerificationToken;
+
+  if (checkIsVerifies) {
+    if (user.is_verified) throw new Error('Invalid request');
+  }
+
   if (user.verfication_code !== code)
     throw new Error('Invalid request.');
 
