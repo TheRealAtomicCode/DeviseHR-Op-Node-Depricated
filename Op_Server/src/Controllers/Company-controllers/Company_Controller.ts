@@ -2,7 +2,7 @@ import { Response, Router } from 'express';
 import auth from '../../Middleware/auth';
 import { isAdmin } from '../../Middleware/authorization';
 import { AuthenticatedOpRequestI } from '../../Types/OperatorRequestType';
-import { isValidEmail } from '../../Helpers/stringValidation';
+import { createCompany } from '../../Services/Company-services/company_service';
 
 const companyRouter = Router();
 
@@ -13,28 +13,21 @@ companyRouter.post(
   isAdmin,
   async (req: AuthenticatedOpRequestI, res: Response) => {
     try {
-      isValidEmail(req.body.email);
-      isValidEmail(req.body.ownerEmail);
-      const companyName = req.body.companyName.trim();
-      const firstName = req.body.firstName.trim();
-      const lastName = req.body.lastName.trim();
-      const ownerFirstName = req.body.ownerFirstName.trim();
-      const ownerLastName = req.body.ownerLastName.trim();
+      const myId = req.userId!;
+      const company = await createCompany(req.body, myId);
 
-      // const companyWithAgent = await createCompany(
-      // 	companyName,
-      // 	firstName,
-      // 	lastName,
-      // 	req.body.email,
-      // 	req.body.expirationDate,
-      // 	ownerFirstName,
-      // 	ownerLastName,
-      // 	req.body.ownerEmail,
-      // 	req.body.maxAmountOfEmployees
-      // );
-
-      //	res.status(200).send(companyWithAgent);
-    } catch (err: any) {}
+      res.status(200).send({
+        data: company,
+        success: false,
+        message: null,
+      });
+    } catch (err: any) {
+      res.status(200).send({
+        data: null,
+        success: true,
+        message: err.message,
+      });
+    }
   }
 );
 

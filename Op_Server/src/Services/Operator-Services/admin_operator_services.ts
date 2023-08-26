@@ -4,6 +4,7 @@ import {
   sendOperatorForgetPassword,
   sendOperatorRagistration,
 } from '../../Functions/node_mailer';
+import { validateNonEmptyStrings } from '../../Helpers/stringValidation';
 import { UserRole } from '../../Types/GeneralTypes';
 import {
   updateOperatorRequestBody,
@@ -22,6 +23,8 @@ const createOperator = async (
     email = email.toLowerCase().trim();
     firstName = firstName.trim();
     lastName = lastName.trim();
+
+    validateNonEmptyStrings([email, firstName, lastName]);
 
     const newUser = await prisma.operators.create({
       data: {
@@ -92,6 +95,10 @@ const updateOperatorDetails = async (
     const email = reqBody.email?.trim().toLocaleLowerCase();
     const firstName = reqBody.firstName?.trim();
     const lastName = reqBody.lastName?.trim();
+
+    if (email) validateNonEmptyStrings([email]);
+    if (firstName) validateNonEmptyStrings([firstName]);
+    if (lastName) validateNonEmptyStrings([lastName]);
 
     const user = await prisma.operators.findUnique({
       where: {

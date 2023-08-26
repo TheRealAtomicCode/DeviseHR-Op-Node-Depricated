@@ -57,7 +57,14 @@ CREATE TABLE Companies (
   main_contact_id INTEGER,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  is_special_client BOOLEAN NOT NULL DEFAULT false
+  is_special_client BOOLEAN NOT NULL DEFAULT false,
+  max_users_allowed INT NOT NULL,
+  security_question_one VARCHAR(60),
+  security_question_two VARCHAR(60),
+  security_answer_two VARCHAR(60),
+  expiration_date TIMESTAMP NOT NULL,
+  phone_number VARCHAR(14) NOT NULL,
+  added_by INT NOT NULL
 );
 
 CREATE TABLE Users (

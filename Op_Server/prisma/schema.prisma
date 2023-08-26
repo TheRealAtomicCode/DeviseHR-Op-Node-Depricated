@@ -29,6 +29,13 @@ model companies {
   created_at                                   DateTime @default(now()) @db.Timestamp(6)
   updated_at                                   DateTime @default(now()) @db.Timestamp(6)
   is_special_client                            Boolean  @default(false)
+  max_users_allowed                            Int
+  security_question_one                        String?  @db.VarChar(60)
+  security_question_two                        String?  @db.VarChar(60)
+  security_answer_two                          String?  @db.VarChar(60)
+  expiration_date                              DateTime @db.Timestamp(6)
+  phone_number                                 String   @db.VarChar(14)
+  added_by                                     Int
   users                                        users[]
 }
 
