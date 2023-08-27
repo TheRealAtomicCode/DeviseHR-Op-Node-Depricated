@@ -1,94 +1,35 @@
 import { Response, Router } from 'express';
 import auth from '../../Middleware/auth';
-import { isAdmin } from '../../Middleware/authorization';
 import { AuthenticatedOpRequestI } from '../../Types/OperatorRequestType';
 import {
-  createCompany,
-  getUserById,
-  updateUserVerificationToken,
-} from '../../Services/Company-services/company_service';
-import {
-  generateVerificationCode,
-  sendOperatorRagistration,
-} from '../../Functions/node_mailer';
+  findCompany,
+  findUsers,
+} from '../../Services/Company-services/company-services';
 
 const companyRouter = Router();
 
-// * Create company
-companyRouter.post(
-  '/create-company',
-  auth,
-  isAdmin,
-  async (req: AuthenticatedOpRequestI, res: Response) => {
-    try {
-      const myId = req.userId!;
-      const company = await createCompany(req.body, myId);
-
-      if (req.body.sendRegistration) {
-        const verificationCode = generateVerificationCode();
-        const updatedOperator = await updateUserVerificationToken(
-          company.users[0].id,
-          verificationCode
-        );
-
-        await sendOperatorRagistration(
-          updatedOperator.id,
-          updatedOperator.email,
-          updatedOperator.first_name,
-          updatedOperator.last_name,
-          verificationCode
-        );
-      }
-
-      res.status(200).send({
-        data: company,
-        success: false,
-        message: null,
-      });
-    } catch (err: any) {
-      res.status(200).send({
-        data: null,
-        success: true,
-        message: err.message,
-      });
-    }
-  }
-);
-
-// * Create company
 companyRouter.get(
-  '/send-user-registration/:userId',
+  '/find-company-and-users',
   auth,
-  isAdmin,
   async (req: AuthenticatedOpRequestI, res: Response) => {
     try {
-      const myId = req.userId!;
-      const user = await getUserById(Number(req.params.userId));
-
-      const verificationCode = generateVerificationCode();
-      const updatedUser = await updateUserVerificationToken(
-        myId,
-        verificationCode
-      );
-
-      await sendOperatorRagistration(
-        updatedUser.id,
-        updatedUser.email,
-        updatedUser.first_name,
-        updatedUser.last_name,
-        verificationCode
-      );
-
-      res.status(200).send({
-        data: user,
-        success: false,
-        message: null,
-      });
+      if (req.query.searchTerm) {
+        const searchTerm = String(req.query.searchTerm);
+        const companies = await findCompany(searchTerm);
+        const users = await findUsers(searchTerm);
+        res.status(200).send({
+          data: { companies, users },
+          message: '',
+          success: true,
+        });
+      } else {
+        throw new Error('Please something to search for');
+      }
     } catch (err: any) {
-      res.status(200).send({
+      res.status(400).send({
         data: null,
-        success: true,
         message: err.message,
+        success: false,
       });
     }
   }
