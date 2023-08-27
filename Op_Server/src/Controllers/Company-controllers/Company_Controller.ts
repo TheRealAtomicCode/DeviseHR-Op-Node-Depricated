@@ -4,7 +4,8 @@ import { isAdmin } from '../../Middleware/authorization';
 import { AuthenticatedOpRequestI } from '../../Types/OperatorRequestType';
 import {
   createCompany,
-  updateCompanyVerificationToken,
+  getUserById,
+  updateUserVerificationToken,
 } from '../../Services/Company-services/company_service';
 import {
   generateVerificationCode,
@@ -25,7 +26,7 @@ companyRouter.post(
 
       if (req.body.sendRegistration) {
         const verificationCode = generateVerificationCode();
-        const updatedOperator = await updateCompanyVerificationToken(
+        const updatedOperator = await updateUserVerificationToken(
           company.users[0].id,
           verificationCode
         );
@@ -41,6 +42,45 @@ companyRouter.post(
 
       res.status(200).send({
         data: company,
+        success: false,
+        message: null,
+      });
+    } catch (err: any) {
+      res.status(200).send({
+        data: null,
+        success: true,
+        message: err.message,
+      });
+    }
+  }
+);
+
+// * Create company
+companyRouter.get(
+  '/send-user-registration/:userId',
+  auth,
+  isAdmin,
+  async (req: AuthenticatedOpRequestI, res: Response) => {
+    try {
+      const myId = req.userId!;
+      const user = await getUserById(Number(req.params.userId));
+
+      const verificationCode = generateVerificationCode();
+      const updatedUser = await updateUserVerificationToken(
+        myId,
+        verificationCode
+      );
+
+      await sendOperatorRagistration(
+        updatedUser.id,
+        updatedUser.email,
+        updatedUser.first_name,
+        updatedUser.last_name,
+        verificationCode
+      );
+
+      res.status(200).send({
+        data: user,
         success: false,
         message: null,
       });

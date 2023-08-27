@@ -1,11 +1,22 @@
 import { prisma } from '../../DB/prismaConfig';
-import { generateVerificationCode } from '../../Functions/node_mailer';
 import {
   isValidEmail,
   validateNonEmptyStrings,
 } from '../../Helpers/stringValidation';
 import { IAddCompany } from '../../Types/CompanyRequestType';
-import { updateVerificationToken } from '../Operator-Services/operator_services';
+
+export const getUserById = async (id: number) => {
+  const user = await prisma.users.findUniqueOrThrow({
+    where: { id },
+    select: {
+      first_name: true,
+      last_name: true,
+      email: true,
+    },
+  });
+
+  return user;
+};
 
 export const createCompany = async (
   reqBody: IAddCompany,
@@ -79,7 +90,7 @@ export const createCompany = async (
   return company;
 };
 
-export const updateCompanyVerificationToken = async (
+export const updateUserVerificationToken = async (
   userId: number,
   verificationCode: string
 ) => {
