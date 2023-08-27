@@ -7,4 +7,5 @@ export interface IAddCompany {
   phoneNumber: string;
   maxEmployeesAllowed: number;
   licenceNumber: string;
+  accountNumber: string;
 }

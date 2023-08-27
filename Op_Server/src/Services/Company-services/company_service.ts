@@ -16,12 +16,14 @@ export const createCompany = async (
   const email = companyRequest.email.trim();
   const phoneNumber = companyRequest.phoneNumber.trim();
   const licenceNumber = companyRequest.licenceNumber.trim();
+  const accountNumber = companyRequest.accountNumber.trim();
   isValidEmail(companyRequest.email);
   validateNonEmptyStrings([
     companyName,
     firstName,
     lastName,
     phoneNumber,
+    accountNumber,
   ]);
 
   const company = await prisma.companies.create({
@@ -32,6 +34,7 @@ export const createCompany = async (
       expiration_date: companyRequest.expirationDate,
       added_by: myId,
       max_users_allowed: companyRequest.maxEmployeesAllowed,
+      account_number: accountNumber,
       users: {
         create: {
           first_name: firstName,
@@ -49,6 +52,7 @@ export const createCompany = async (
       expiration_date: true,
       added_by: true,
       max_users_allowed: true,
+      account_number: true,
       users: {
         select: {
           id: true,
