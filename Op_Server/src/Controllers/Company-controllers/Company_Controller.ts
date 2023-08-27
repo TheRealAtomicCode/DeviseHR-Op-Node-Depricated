@@ -2,7 +2,14 @@ import { Response, Router } from 'express';
 import auth from '../../Middleware/auth';
 import { isAdmin } from '../../Middleware/authorization';
 import { AuthenticatedOpRequestI } from '../../Types/OperatorRequestType';
-import { createCompany } from '../../Services/Company-services/company_service';
+import {
+  createCompany,
+  updateCompanyVerificationToken,
+} from '../../Services/Company-services/company_service';
+import {
+  generateVerificationCode,
+  sendOperatorRagistration,
+} from '../../Functions/node_mailer';
 
 const companyRouter = Router();
 
@@ -15,6 +22,22 @@ companyRouter.post(
     try {
       const myId = req.userId!;
       const company = await createCompany(req.body, myId);
+
+      if (req.body.sendRegistration) {
+        const verificationCode = generateVerificationCode();
+        const updatedOperator = await updateCompanyVerificationToken(
+          company.users[0].id,
+          verificationCode
+        );
+
+        await sendOperatorRagistration(
+          updatedOperator.id,
+          updatedOperator.email,
+          updatedOperator.first_name,
+          updatedOperator.last_name,
+          verificationCode
+        );
+      }
 
       res.status(200).send({
         data: company,

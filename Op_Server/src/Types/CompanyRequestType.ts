@@ -8,4 +8,5 @@ export interface IAddCompany {
   maxEmployeesAllowed: number;
   licenceNumber: string;
   accountNumber: string;
+  sendRegistration: boolean;
 }

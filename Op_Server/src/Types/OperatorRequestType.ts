@@ -17,3 +17,10 @@ export interface updateOperatorRoleRequestBody {
   opId: Number;
   role: 'admin' | 'manager' | 'employee';
 }
+
+export interface ICreateOperatorRequest {
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: 'admin' | 'manager' | 'employee';
+}

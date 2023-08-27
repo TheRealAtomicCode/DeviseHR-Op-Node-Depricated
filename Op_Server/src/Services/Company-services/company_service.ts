@@ -1,45 +1,47 @@
 import { prisma } from '../../DB/prismaConfig';
+import { generateVerificationCode } from '../../Functions/node_mailer';
 import {
   isValidEmail,
   validateNonEmptyStrings,
 } from '../../Helpers/stringValidation';
 import { IAddCompany } from '../../Types/CompanyRequestType';
+import { updateVerificationToken } from '../Operator-Services/operator_services';
 
 export const createCompany = async (
-  companyRequest: IAddCompany,
+  reqBody: IAddCompany,
   myId: number
 ) => {
   //* validations and trims
-  const companyName = companyRequest.companyName.trim();
-  const firstName = companyRequest.firstName.trim();
-  const lastName = companyRequest.lastName.trim();
-  const email = companyRequest.email.trim();
-  const phoneNumber = companyRequest.phoneNumber.trim();
-  const licenceNumber = companyRequest.licenceNumber.trim();
-  const accountNumber = companyRequest.accountNumber.trim();
-  isValidEmail(companyRequest.email);
+  reqBody.companyName = reqBody.companyName.trim();
+  reqBody.firstName = reqBody.firstName.trim();
+  reqBody.lastName = reqBody.lastName.trim();
+  reqBody.email = reqBody.email.trim();
+  reqBody.phoneNumber = reqBody.phoneNumber.trim();
+  reqBody.licenceNumber = reqBody.licenceNumber.trim();
+  reqBody.accountNumber = reqBody.accountNumber.trim();
+  isValidEmail(reqBody.email);
   validateNonEmptyStrings([
-    companyName,
-    firstName,
-    lastName,
-    phoneNumber,
-    accountNumber,
+    reqBody.companyName,
+    reqBody.firstName,
+    reqBody.lastName,
+    reqBody.phoneNumber,
+    reqBody.accountNumber,
   ]);
 
   const company = await prisma.companies.create({
     data: {
-      name: companyName,
-      licence_number: licenceNumber,
-      phone_number: phoneNumber,
-      expiration_date: companyRequest.expirationDate,
+      name: reqBody.companyName,
+      licence_number: reqBody.licenceNumber,
+      phone_number: reqBody.phoneNumber,
+      expiration_date: reqBody.expirationDate,
       added_by: myId,
-      max_users_allowed: companyRequest.maxEmployeesAllowed,
-      account_number: accountNumber,
+      max_users_allowed: reqBody.maxEmployeesAllowed,
+      account_number: reqBody.accountNumber,
       users: {
         create: {
-          first_name: firstName,
-          last_name: lastName,
-          email,
+          first_name: reqBody.firstName,
+          last_name: reqBody.lastName,
+          email: reqBody.email,
           added_by: 0,
         },
       },
@@ -75,4 +77,24 @@ export const createCompany = async (
   });
 
   return company;
+};
+
+export const updateCompanyVerificationToken = async (
+  userId: number,
+  verificationCode: string
+) => {
+  const user = await prisma.users.update({
+    where: { id: userId },
+    data: {
+      verification_code: verificationCode,
+    },
+    select: {
+      id: true,
+      first_name: true,
+      last_name: true,
+      email: true,
+    },
+  });
+
+  return user;
 };

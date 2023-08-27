@@ -27,11 +27,8 @@ AdminOperatorConroller.post(
   async (req: AuthenticatedOpRequestI, res: Response) => {
     try {
       const newOperator = await createOperator(
-        req.body.firstName,
-        req.body.lastName,
-        req.body.email,
-        req.body.role,
-        req.userId!
+        req.body,
+        Number(req.userId)
       );
 
       if (req.body.sendRegistration) {

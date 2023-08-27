@@ -11,7 +11,7 @@ model companies {
   id                                           Int      @id @default(autoincrement())
   name                                         String   @db.VarChar(60)
   licence_number                               String   @db.VarChar(255)
-  account_number                               String?  @db.VarChar(6)
+  account_number                               String   @unique @db.VarChar(6)
   logo                                         String?
   enable_semi_personal_information             Boolean  @default(false)
   enable_show_employees                        Boolean  @default(false)

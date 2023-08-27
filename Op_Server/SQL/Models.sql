@@ -40,7 +40,7 @@ CREATE TABLE Companies (
   id SERIAL PRIMARY KEY,
   name VARCHAR(60) NOT NULL,
   licence_number VARCHAR(255) NOT NULL,
-  account_number VARCHAR(6),
+  account_number VARCHAR(6) NOT NULL UNIQUE,
   logo TEXT,
   enable_semi_personal_information BOOLEAN NOT NULL DEFAULT false,
   enable_show_employees BOOLEAN NOT NULL DEFAULT false,

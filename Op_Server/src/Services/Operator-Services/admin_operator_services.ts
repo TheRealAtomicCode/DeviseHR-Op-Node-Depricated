@@ -7,31 +7,33 @@ import {
 import { validateNonEmptyStrings } from '../../Helpers/stringValidation';
 import { UserRole } from '../../Types/GeneralTypes';
 import {
+  ICreateOperatorRequest,
   updateOperatorRequestBody,
   updateOperatorRoleRequestBody,
 } from '../../Types/OperatorRequestType';
 
 // * Create operator
 const createOperator = async (
-  firstName: string,
-  lastName: string,
-  email: string,
-  role: UserRole,
+  reqBody: ICreateOperatorRequest,
   myId: number
 ) => {
   try {
-    email = email.toLowerCase().trim();
-    firstName = firstName.trim();
-    lastName = lastName.trim();
+    reqBody.email = reqBody.email.toLowerCase().trim();
+    reqBody.firstName = reqBody.firstName.trim();
+    reqBody.lastName = reqBody.lastName.trim();
 
-    validateNonEmptyStrings([email, firstName, lastName]);
+    validateNonEmptyStrings([
+      reqBody.email,
+      reqBody.firstName,
+      reqBody.lastName,
+    ]);
 
     const newUser = await prisma.operators.create({
       data: {
-        first_name: firstName,
-        last_name: lastName,
-        email,
-        user_role: role,
+        first_name: reqBody.firstName,
+        last_name: reqBody.lastName,
+        email: reqBody.email,
+        user_role: reqBody.role,
         added_by: myId,
       },
       select: {
