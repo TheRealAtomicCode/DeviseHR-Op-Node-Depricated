@@ -1,6 +1,6 @@
 import { prisma } from '../../DB/prismaConfig';
 
-const getCompanyById = async (id: number) => {
+const getCompanyWithUserById = async (id: number) => {
   const company = await prisma.companies.findUniqueOrThrow({
     where: {
       id,
@@ -35,9 +35,11 @@ const getCompanyById = async (id: number) => {
       },
     },
   });
+
+  return company;
 };
 
-const getuserById = async (id: number) => {
+const getUserWithCompanyById = async (id: number) => {
   const user = await prisma.users.findUniqueOrThrow({
     where: {
       id,
@@ -126,4 +128,9 @@ const findUsers = async (searchTerm: string) => {
   return users;
 };
 
-export { getCompanyById, getuserById, findCompany, findUsers };
+export {
+  getCompanyWithUserById,
+  getUserWithCompanyById,
+  findCompany,
+  findUsers,
+};

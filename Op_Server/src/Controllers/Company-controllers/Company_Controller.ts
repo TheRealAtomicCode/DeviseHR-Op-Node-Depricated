@@ -4,7 +4,8 @@ import { AuthenticatedOpRequestI } from '../../Types/OperatorRequestType';
 import {
   findCompany,
   findUsers,
-  getCompanyById,
+  getCompanyWithUserById,
+  getUserWithCompanyById,
 } from '../../Services/Company-services/company-services';
 import { getUserById } from '../../Services/Company-services/admin_company_service';
 
@@ -15,7 +16,10 @@ companyRouter.get(
   auth,
   async (req: AuthenticatedOpRequestI, res: Response) => {
     try {
-      const company = await getCompanyById(Number(req.params.id));
+      const company = await getCompanyWithUserById(
+        Number(req.params.id)
+      );
+      console.log(company);
       res.status(200).send({
         data: company,
         message: '',
@@ -36,7 +40,9 @@ companyRouter.get(
   auth,
   async (req: AuthenticatedOpRequestI, res: Response) => {
     try {
-      const user = await getUserById(Number(req.params.id));
+      const user = await getUserWithCompanyById(
+        Number(req.params.id)
+      );
       res.status(200).send({
         data: user,
         message: '',
