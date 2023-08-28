@@ -21,7 +21,7 @@ const getCompanyWithUserById = async (id: number) => {
       security_answer_two: true,
       expiration_date: true,
       phone_number: true,
-      added_by: true,
+      added_by_operator: true,
       users: {
         select: {
           id: true,
@@ -54,8 +54,9 @@ const getUserWithCompanyById = async (id: number) => {
       user_type: true,
       created_at: true,
       updated_at: true,
-      added_by: true,
-      edited_by: true,
+      added_by_user: true,
+      updated_by_operator: true,
+      updated_by_user: true,
       login_attempt: true,
       last_login_time: true,
       last_active_time: true,
@@ -87,7 +88,7 @@ const findCompany = async (searchTerm: string) => {
       account_number: true,
       expiration_date: true,
       phone_number: true,
-      added_by: true,
+      added_by_operator: true,
     },
   });
 

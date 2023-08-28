@@ -36,7 +36,8 @@ model companies {
   security_answer_two                          String?  @db.VarChar(60)
   expiration_date                              DateTime @db.Timestamp(6)
   phone_number                                 String   @db.VarChar(14)
-  added_by                                     Int
+  added_by_operator                            Int
+  updated_by_operator                          Int?
   users                                        users[]
 }
 
@@ -50,25 +51,25 @@ model notes {
 }
 
 model operators {
-  id               Int            @id @default(autoincrement())
-  first_name       String         @db.VarChar(20)
-  last_name        String         @db.VarChar(20)
-  email            String         @unique @db.VarChar(60)
-  password_hash    String?        @db.VarChar(60)
-  profile_picture  String?
-  is_terminated    Boolean        @default(false)
-  is_verified      Boolean        @default(false)
-  user_role        user_role_enum
-  created_at       DateTime       @default(now()) @db.Timestamp(6)
-  updated_at       DateTime       @default(now()) @db.Timestamp(6)
-  refresh_tokens   String[]       @default([])
-  added_by         Int
-  edited_by        Int?
-  verfication_code String?        @db.VarChar(10)
-  login_attempt    Int?           @default(0) @db.SmallInt
-  last_login_time  DateTime?      @db.Timestamp(6)
-  last_active_time DateTime?      @db.Timestamp(6)
-  notes            notes[]
+  id                  Int            @id @default(autoincrement())
+  first_name          String         @db.VarChar(20)
+  last_name           String         @db.VarChar(20)
+  email               String         @unique @db.VarChar(60)
+  password_hash       String?        @db.VarChar(60)
+  profile_picture     String?
+  is_terminated       Boolean        @default(false)
+  is_verified         Boolean        @default(false)
+  user_role           user_role_enum
+  created_at          DateTime       @default(now()) @db.Timestamp(6)
+  updated_at          DateTime       @default(now()) @db.Timestamp(6)
+  refresh_tokens      String[]       @default([])
+  added_by            Int
+  updated_by_oprtator Int?
+  verfication_code    String?        @db.VarChar(10)
+  login_attempt       Int?           @default(0) @db.SmallInt
+  last_login_time     DateTime?      @db.Timestamp(6)
+  last_active_time    DateTime?      @db.Timestamp(6)
+  notes               notes[]
 }
 
 model users {
@@ -96,8 +97,9 @@ model users {
   enable_receive_requests                    Boolean    @default(false)
   enable_receive_requests_from_my_department Boolean    @default(false)
   contracted_leave_start_date                DateTime?  @db.Date
-  added_by                                   Int
-  edited_by                                  Int?
+  added_by_user                              Int
+  updated_by_operator                        Int?
+  updated_by_user                            Int?
   verification_code                          String?    @db.VarChar(10)
   login_attempt                              Int?       @default(0) @db.SmallInt
   last_login_time                            DateTime?  @db.Timestamp(6)

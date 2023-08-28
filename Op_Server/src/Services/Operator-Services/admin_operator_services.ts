@@ -68,7 +68,7 @@ const updateOperatorRole = async (
       },
       data: {
         user_role: reqBody.role,
-        edited_by: myId,
+        updated_by_oprtator: myId,
         updated_at: new Date(),
       },
       select: {
@@ -77,7 +77,7 @@ const updateOperatorRole = async (
         last_name: true,
         user_role: true,
         email: true,
-        edited_by: true,
+        updated_by_oprtator: true,
         updated_at: true,
       },
     });
@@ -111,7 +111,7 @@ const updateOperatorDetails = async (
         first_name: true,
         last_name: true,
         email: true,
-        edited_by: true,
+        updated_by_oprtator: true,
       },
     });
 
@@ -123,7 +123,7 @@ const updateOperatorDetails = async (
         first_name: firstName || user?.first_name,
         last_name: lastName || user?.last_name,
         email: email || user?.email,
-        edited_by: myId,
+        updated_by_oprtator: myId,
         updated_at: new Date(),
       },
       select: {
@@ -131,7 +131,7 @@ const updateOperatorDetails = async (
         first_name: true,
         last_name: true,
         email: true,
-        edited_by: true,
+        updated_by_oprtator: true,
         updated_at: true,
       },
     });

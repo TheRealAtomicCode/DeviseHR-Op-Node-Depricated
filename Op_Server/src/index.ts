@@ -10,6 +10,7 @@ import path from 'path';
 import OperatorRegistrationController from './Controllers/Operator-controllers/Operator_Registration_Controller';
 import adminCompanyRouter from './Controllers/Company-controllers/Admin_Company_Controller';
 import companyRouter from './Controllers/Company-controllers/Company_Controller';
+import manageCompanyRouter from './Controllers/Company-controllers/Manager_Company_controller';
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.use('/api/operator-logging', LogOperatorController);
 app.use('/api/operators', OperatorsController);
 app.use('/api/admin-operators', AdminOperatorConroller);
 app.use('/api/admin-company', adminCompanyRouter);
+app.use('/api/manage-company', manageCompanyRouter);
 app.use('/api/company', companyRouter);
 app.set('view engine', 'hbs');
 app.set('views', viewsPath);

@@ -20,7 +20,7 @@ CREATE TABLE Operators (
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   refresh_tokens TEXT[] DEFAULT ARRAY[]::TEXT[],
   added_by INT NOT NULL,
-  edited_by INT,
+  updated_by_oprtator INT,
   verfication_code VARCHAR(10),
   login_attempt SMALLINT DEFAULT 0,
   last_login_time TIMESTAMP,
@@ -65,7 +65,8 @@ CREATE TABLE Companies (
   security_answer_two VARCHAR(60),
   expiration_date TIMESTAMP NOT NULL,
   phone_number VARCHAR(14) NOT NULL,
-  added_by INT NOT NULL
+  added_by_operator INT NOT NULL,
+  updated_by_operator INT
 );
 
 CREATE TABLE Users (
@@ -93,8 +94,9 @@ CREATE TABLE Users (
   enable_receive_requests BOOLEAN NOT NULL DEFAULT false,
   enable_receive_requests_from_my_department BOOLEAN NOT NULL DEFAULT false,
   contracted_leave_start_date DATE,
-  added_by INT NOT NULL,
-  edited_by INT,
+  added_by_user INT NOT NULL,
+  updated_by_operator INT,
+  updated_by_user INT,
   verification_code VARCHAR(10),
   login_attempt SMALLINT DEFAULT 0, 
   last_login_time TIMESTAMP,
