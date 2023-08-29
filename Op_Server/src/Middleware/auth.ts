@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 import { verify } from 'jsonwebtoken';
-import { AuthenticatedOpRequestI } from '../Types/OperatorRequestType';
+import { IAuthenticatedOpRequest } from '../Types/OperatorRequestType';
 import { DecodedToken } from '../Types/GeneralTypes';
 
 const auth = async (
-  req: AuthenticatedOpRequestI,
+  req: IAuthenticatedOpRequest,
   res: Response,
   next: NextFunction
 ) => {

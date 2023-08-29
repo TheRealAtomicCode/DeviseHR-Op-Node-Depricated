@@ -1,4 +1,5 @@
 import { prisma } from '../../DB/prismaConfig';
+import { addUserFilter } from '../../Functions/filter_functions';
 import {
   isValidEmail,
   validateNonEmptyStrings,
@@ -37,11 +38,7 @@ const addUserToCompany = async (
   reqBody: IAddUserRequest,
   myId: number
 ) => {
-  reqBody.firstName = reqBody.firstName.trim();
-  reqBody.lastName = reqBody.lastName.trim();
-  reqBody.email = reqBody.email.trim();
-  isValidEmail(reqBody.email);
-  validateNonEmptyStrings([reqBody.firstName, reqBody.lastName]);
+  addUserFilter(reqBody);
 
   try {
     const addedUser = await prisma.users.create({

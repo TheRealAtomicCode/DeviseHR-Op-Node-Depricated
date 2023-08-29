@@ -1,6 +1,6 @@
 import { Response, Router } from 'express';
 import auth from '../../Middleware/auth';
-import { AuthenticatedOpRequestI } from '../../Types/OperatorRequestType';
+import { IAuthenticatedOpRequest } from '../../Types/OperatorRequestType';
 import {
   findCompany,
   findUsers,
@@ -14,7 +14,7 @@ const companyRouter = Router();
 companyRouter.get(
   '/get-company/:id',
   auth,
-  async (req: AuthenticatedOpRequestI, res: Response) => {
+  async (req: IAuthenticatedOpRequest, res: Response) => {
     try {
       const company = await getCompanyWithUserById(
         Number(req.params.id)
@@ -38,7 +38,7 @@ companyRouter.get(
 companyRouter.get(
   '/get-user/:id',
   auth,
-  async (req: AuthenticatedOpRequestI, res: Response) => {
+  async (req: IAuthenticatedOpRequest, res: Response) => {
     try {
       const user = await getUserWithCompanyById(
         Number(req.params.id)
@@ -61,7 +61,7 @@ companyRouter.get(
 companyRouter.get(
   '/find-company-and-users',
   auth,
-  async (req: AuthenticatedOpRequestI, res: Response) => {
+  async (req: IAuthenticatedOpRequest, res: Response) => {
     try {
       if (req.query.searchTerm) {
         const searchTerm = String(req.query.searchTerm);

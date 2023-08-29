@@ -5,7 +5,7 @@ import {
   findOperatorAndReplaceRefreshToken,
 } from '../../Services/Operator-Services/operator_services';
 import auth from '../../Middleware/auth';
-import { AuthenticatedOpRequestI } from '../../Types/OperatorRequestType';
+import { IAuthenticatedOpRequest } from '../../Types/OperatorRequestType';
 import {
   logMeOut,
   logMeOutAllDevices,
@@ -54,7 +54,7 @@ LogOperatorController.post(
 LogOperatorController.post(
   '/refresh',
   auth,
-  async (req: AuthenticatedOpRequestI, res: Response) => {
+  async (req: IAuthenticatedOpRequest, res: Response) => {
     try {
       const { refreshedUser, newRefreshToken, newToken } =
         await findOperatorAndReplaceRefreshToken(
@@ -89,7 +89,7 @@ LogOperatorController.post(
 LogOperatorController.patch(
   '/logout',
   auth,
-  async (req: AuthenticatedOpRequestI, res: Response) => {
+  async (req: IAuthenticatedOpRequest, res: Response) => {
     try {
       await logMeOut(req.userId!, req.body.refreshToken);
 
@@ -114,7 +114,7 @@ LogOperatorController.patch(
 LogOperatorController.get(
   '/logout-all',
   auth,
-  async (req: AuthenticatedOpRequestI, res: Response) => {
+  async (req: IAuthenticatedOpRequest, res: Response) => {
     try {
       await logMeOutAllDevices(req.userId!);
 

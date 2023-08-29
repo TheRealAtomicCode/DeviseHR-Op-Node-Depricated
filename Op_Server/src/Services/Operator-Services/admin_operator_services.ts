@@ -1,5 +1,9 @@
 import { prisma } from '../../DB/prismaConfig';
 import {
+  addOperatorFilter,
+  updateOperatorFilter,
+} from '../../Functions/filter_functions';
+import {
   generateVerificationCode,
   sendOperatorForgetPassword,
   sendOperatorRagistration,
@@ -8,8 +12,8 @@ import { validateNonEmptyStrings } from '../../Helpers/stringValidation';
 import { UserRole } from '../../Types/GeneralTypes';
 import {
   ICreateOperatorRequest,
-  updateOperatorRequestBody,
-  updateOperatorRoleRequestBody,
+  IUpdateOperatorRequestBody,
+  IUpdateOperatorRoleRequestBody,
 } from '../../Types/OperatorRequestType';
 
 // * Create operator
@@ -18,9 +22,7 @@ const createOperator = async (
   myId: number
 ) => {
   try {
-    reqBody.email = reqBody.email.toLowerCase().trim();
-    reqBody.firstName = reqBody.firstName.trim();
-    reqBody.lastName = reqBody.lastName.trim();
+    addOperatorFilter(reqBody);
 
     validateNonEmptyStrings([
       reqBody.email,
@@ -58,7 +60,7 @@ const createOperator = async (
 
 // * edit operator
 const updateOperatorRole = async (
-  reqBody: updateOperatorRoleRequestBody,
+  reqBody: IUpdateOperatorRoleRequestBody,
   myId: number
 ) => {
   try {
@@ -90,17 +92,11 @@ const updateOperatorRole = async (
 
 // * edit operator role
 const updateOperatorDetails = async (
-  reqBody: updateOperatorRequestBody,
+  reqBody: IUpdateOperatorRequestBody,
   myId: number
 ) => {
   try {
-    const email = reqBody.email?.trim().toLocaleLowerCase();
-    const firstName = reqBody.firstName?.trim();
-    const lastName = reqBody.lastName?.trim();
-
-    if (email) validateNonEmptyStrings([email]);
-    if (firstName) validateNonEmptyStrings([firstName]);
-    if (lastName) validateNonEmptyStrings([lastName]);
+    updateOperatorFilter(reqBody);
 
     const user = await prisma.operators.findUnique({
       where: {
@@ -115,14 +111,14 @@ const updateOperatorDetails = async (
       },
     });
 
-    const editedUser = await prisma.operators.update({
+    const updatedUser = await prisma.operators.update({
       where: {
         id: user?.id,
       },
       data: {
-        first_name: firstName || user?.first_name,
-        last_name: lastName || user?.last_name,
-        email: email || user?.email,
+        first_name: reqBody.firstName || user?.first_name,
+        last_name: reqBody.lastName || user?.last_name,
+        email: reqBody.email || user?.email,
         updated_by_oprtator: myId,
         updated_at: new Date(),
       },
@@ -136,7 +132,7 @@ const updateOperatorDetails = async (
       },
     });
 
-    return editedUser;
+    return updatedUser;
   } catch {
     throw new Error('Failed to update the users permission level');
   }

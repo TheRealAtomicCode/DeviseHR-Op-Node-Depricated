@@ -1,19 +1,25 @@
 import { Request } from 'express';
 import { DecodedToken } from './GeneralTypes';
 
-export interface AuthenticatedOpRequestI extends Request {
+export interface IAuthenticatedOpRequest extends Request {
   decodedUser?: DecodedToken;
   userId?: number;
 }
 
-export interface updateOperatorRequestBody {
+export interface IAddOperatorRequest {
+  firstName: string | null;
+  lastName: string | null;
+  email: string | null;
+}
+
+export interface IUpdateOperatorRequestBody {
   opId: Number;
   firstName: string | null;
   lastName: string | null;
   email: string | null;
 }
 
-export interface updateOperatorRoleRequestBody {
+export interface IUpdateOperatorRoleRequestBody {
   opId: Number;
   role: 'admin' | 'manager' | 'employee';
 }

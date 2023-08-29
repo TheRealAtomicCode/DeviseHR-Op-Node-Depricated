@@ -1,4 +1,5 @@
 import { prisma } from '../../DB/prismaConfig';
+import { createCompanyFilter } from '../../Functions/filter_functions';
 import {
   isValidEmail,
   validateNonEmptyStrings,
@@ -22,22 +23,7 @@ export const createCompany = async (
   reqBody: IAddCompany,
   myId: number
 ) => {
-  //* validations and trims
-  reqBody.companyName = reqBody.companyName.trim();
-  reqBody.firstName = reqBody.firstName.trim();
-  reqBody.lastName = reqBody.lastName.trim();
-  reqBody.email = reqBody.email.trim();
-  reqBody.phoneNumber = reqBody.phoneNumber.trim();
-  reqBody.licenceNumber = reqBody.licenceNumber.trim();
-  reqBody.accountNumber = reqBody.accountNumber.trim();
-  isValidEmail(reqBody.email);
-  validateNonEmptyStrings([
-    reqBody.companyName,
-    reqBody.firstName,
-    reqBody.lastName,
-    reqBody.phoneNumber,
-    reqBody.accountNumber,
-  ]);
+  createCompanyFilter(reqBody);
 
   const company = await prisma.companies.create({
     data: {

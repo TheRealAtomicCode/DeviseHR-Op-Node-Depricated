@@ -1,7 +1,7 @@
 import { Response, Router } from 'express';
 import auth from '../../Middleware/auth';
 import { isAdmin } from '../../Middleware/authorization';
-import { AuthenticatedOpRequestI } from '../../Types/OperatorRequestType';
+import { IAuthenticatedOpRequest } from '../../Types/OperatorRequestType';
 import {
   createCompany,
   getUserById,
@@ -19,7 +19,7 @@ adminCompanyRouter.post(
   '/create-company',
   auth,
   isAdmin,
-  async (req: AuthenticatedOpRequestI, res: Response) => {
+  async (req: IAuthenticatedOpRequest, res: Response) => {
     try {
       const myId = req.userId!;
       const company = await createCompany(req.body, myId);
@@ -60,7 +60,7 @@ adminCompanyRouter.get(
   '/send-user-registration/:userId',
   auth,
   isAdmin,
-  async (req: AuthenticatedOpRequestI, res: Response) => {
+  async (req: IAuthenticatedOpRequest, res: Response) => {
     try {
       const myId = req.userId!;
       const user = await getUserById(Number(req.params.userId));

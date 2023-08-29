@@ -1,8 +1,8 @@
 import { NextFunction, Response } from 'express';
-import { AuthenticatedOpRequestI } from '../Types/OperatorRequestType';
+import { IAuthenticatedOpRequest } from '../Types/OperatorRequestType';
 
 const isAdmin = (
-  req: AuthenticatedOpRequestI,
+  req: IAuthenticatedOpRequest,
   res: Response,
   next: NextFunction
 ) => {
@@ -16,7 +16,7 @@ const isAdmin = (
 };
 
 const isManager = (
-  req: AuthenticatedOpRequestI,
+  req: IAuthenticatedOpRequest,
   res: Response,
   next: NextFunction
 ) => {

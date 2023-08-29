@@ -1,5 +1,5 @@
 import { Router, Response } from 'express';
-import { AuthenticatedOpRequestI } from '../../Types/OperatorRequestType';
+import { IAuthenticatedOpRequest } from '../../Types/OperatorRequestType';
 import auth from '../../Middleware/auth';
 import { prisma } from '../../DB/prismaConfig';
 
@@ -9,7 +9,7 @@ const OperatorsController = Router();
 OperatorsController.get(
   '/me',
   auth,
-  async (req: AuthenticatedOpRequestI, res: Response) => {
+  async (req: IAuthenticatedOpRequest, res: Response) => {
     try {
       const opId = Number(req.decodedUser?.id);
       const user = await prisma.operators.findUnique({

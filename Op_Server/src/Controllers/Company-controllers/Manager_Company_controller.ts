@@ -1,7 +1,7 @@
 import { Response, Router } from 'express';
 import auth from '../../Middleware/auth';
 import { isManager } from '../../Middleware/authorization';
-import { AuthenticatedOpRequestI } from '../../Types/OperatorRequestType';
+import { IAuthenticatedOpRequest } from '../../Types/OperatorRequestType';
 import {
   getUserById,
   updateUserVerificationToken,
@@ -22,7 +22,7 @@ manageCompanyRouter.patch(
   '/edit-email',
   auth,
   isManager,
-  async (req: AuthenticatedOpRequestI, res: Response) => {
+  async (req: IAuthenticatedOpRequest, res: Response) => {
     try {
       const user = await updateEmailById(
         req.body.id,
@@ -49,7 +49,7 @@ manageCompanyRouter.post(
   '/add-user-to-company',
   auth,
   isManager,
-  async (req: AuthenticatedOpRequestI, res: Response) => {
+  async (req: IAuthenticatedOpRequest, res: Response) => {
     try {
       const addedUser = await addUserToCompany(req.body, req.userId!);
 

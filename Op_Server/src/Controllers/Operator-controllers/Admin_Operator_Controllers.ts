@@ -1,5 +1,5 @@
 import { Response, Router } from 'express';
-import { AuthenticatedOpRequestI } from '../../Types/OperatorRequestType';
+import { IAuthenticatedOpRequest } from '../../Types/OperatorRequestType';
 import auth from '../../Middleware/auth';
 import { isAdmin } from '../../Middleware/authorization';
 import {
@@ -24,7 +24,7 @@ AdminOperatorConroller.post(
   '/create-operator',
   auth,
   isAdmin,
-  async (req: AuthenticatedOpRequestI, res: Response) => {
+  async (req: IAuthenticatedOpRequest, res: Response) => {
     try {
       const newOperator = await createOperator(
         req.body,
@@ -67,7 +67,7 @@ AdminOperatorConroller.get(
   '/send-registration/:opId',
   auth,
   isAdmin,
-  async (req: AuthenticatedOpRequestI, res: Response) => {
+  async (req: IAuthenticatedOpRequest, res: Response) => {
     try {
       const verificationCode = generateVerificationCode();
       const updatedOperator = await updateVerificationToken(
@@ -103,7 +103,7 @@ AdminOperatorConroller.get(
   '/operators',
   auth,
   isAdmin,
-  async (req: AuthenticatedOpRequestI, res: Response) => {
+  async (req: IAuthenticatedOpRequest, res: Response) => {
     try {
       const operators = await getAllOperators();
 
@@ -127,7 +127,7 @@ AdminOperatorConroller.get(
   '/operators/:operatorId',
   auth,
   isAdmin,
-  async (req: AuthenticatedOpRequestI, res: Response) => {
+  async (req: IAuthenticatedOpRequest, res: Response) => {
     try {
       const operators = await getOperatorDetails(
         Number(req.params.operatorId)
@@ -153,7 +153,7 @@ AdminOperatorConroller.patch(
   '/edit-operator',
   auth,
   isAdmin,
-  async (req: AuthenticatedOpRequestI, res: Response) => {
+  async (req: IAuthenticatedOpRequest, res: Response) => {
     try {
       const updatedOperator = await updateOperatorDetails(
         req.body,
@@ -180,7 +180,7 @@ AdminOperatorConroller.patch(
   '/edit-role',
   auth,
   isAdmin,
-  async (req: AuthenticatedOpRequestI, res: Response) => {
+  async (req: IAuthenticatedOpRequest, res: Response) => {
     try {
       const updatedOperator = await updateOperatorRole(
         req.body,
@@ -207,7 +207,7 @@ AdminOperatorConroller.patch(
   '/reset-operator-pswd',
   auth,
   isAdmin,
-  async (req: AuthenticatedOpRequestI, res: Response) => {
+  async (req: IAuthenticatedOpRequest, res: Response) => {
     try {
       noSelfOperation(req.userId!, req.body.opId);
 
