@@ -24,3 +24,12 @@ export interface ICreateOperatorRequest {
   email: string;
   role: 'admin' | 'manager' | 'employee';
 }
+
+export interface IAddUserRequest {
+  firstName: string;
+  lastName: string;
+  email: string;
+  userRole: 'admin' | 'manager' | 'employee';
+  companyId: number;
+  sendRegistration: boolean;
+}

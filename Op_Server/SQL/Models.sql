@@ -2,9 +2,11 @@ DROP TABLE Users;
 DROP TABLE Companies;
 DROP TABLE Notes;
 DROP TABLE Operators;
+DROP TYPE operator_role_enum;
 DROP TYPE user_role_enum;
 
-CREATE TYPE user_role_enum AS ENUM ('root', 'sudo', 'admin', 'manager', 'employee');
+CREATE TYPE operator_role_enum AS ENUM ('root', 'sudo', 'admin', 'manager', 'employee');
+CREATE TYPE user_role_enum AS ENUM ('admin', 'manager', 'employee');
 
 CREATE TABLE Operators (
   id SERIAL PRIMARY KEY,
@@ -15,7 +17,7 @@ CREATE TABLE Operators (
   profile_picture TEXT,
   is_terminated BOOLEAN NOT NULL DEFAULT false,
   is_verified BOOLEAN NOT NULL DEFAULT false,
-  user_role user_role_enum NOT NULL,
+  user_role operator_role_enum NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   refresh_tokens TEXT[] DEFAULT ARRAY[]::TEXT[],
@@ -83,7 +85,7 @@ CREATE TABLE Users (
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   refresh_tokens TEXT[] DEFAULT ARRAY[]::TEXT[],
-  user_type INT,
+  user_role user_role_enum NOT NULL,
   ni_no VARCHAR(60),
   drivers_licence_number VARCHAR(60),
   drivers_licence_expiration_date DATE,
@@ -94,6 +96,7 @@ CREATE TABLE Users (
   enable_receive_requests BOOLEAN NOT NULL DEFAULT false,
   enable_receive_requests_from_my_department BOOLEAN NOT NULL DEFAULT false,
   contracted_leave_start_date DATE,
+  added_by_operator INT NOT NULL,
   added_by_user INT NOT NULL,
   updated_by_operator INT,
   updated_by_user INT,

@@ -2,8 +2,18 @@ import { Response, Router } from 'express';
 import auth from '../../Middleware/auth';
 import { isManager } from '../../Middleware/authorization';
 import { AuthenticatedOpRequestI } from '../../Types/OperatorRequestType';
-import { getUserById } from '../../Services/Company-services/admin_company_service';
-import { updateEmailById } from '../../Services/Company-services/manager_company_services';
+import {
+  getUserById,
+  updateUserVerificationToken,
+} from '../../Services/Company-services/admin_company_service';
+import {
+  addUserToCompany,
+  updateEmailById,
+} from '../../Services/Company-services/manager_company_services';
+import {
+  generateVerificationCode,
+  sendOperatorRagistration,
+} from '../../Functions/node_mailer';
 
 const manageCompanyRouter = Router();
 
@@ -29,6 +39,45 @@ manageCompanyRouter.patch(
       res.status(200).send({
         data: null,
         success: true,
+        message: err.message,
+      });
+    }
+  }
+);
+
+manageCompanyRouter.post(
+  '/add-user-to-company',
+  auth,
+  isManager,
+  async (req: AuthenticatedOpRequestI, res: Response) => {
+    try {
+      const addedUser = await addUserToCompany(req.body, req.userId!);
+
+      if (req.body.sendRegistration) {
+        const verificationCode = generateVerificationCode();
+        const updatedOperator = await updateUserVerificationToken(
+          addedUser.id,
+          verificationCode
+        );
+
+        await sendOperatorRagistration(
+          updatedOperator.id,
+          updatedOperator.email,
+          updatedOperator.first_name,
+          updatedOperator.last_name,
+          verificationCode
+        );
+      }
+
+      res.status(200).send({
+        data: addedUser,
+        success: true,
+        message: null,
+      });
+    } catch (err: any) {
+      res.status(200).send({
+        data: null,
+        success: false,
         message: err.message,
       });
     }

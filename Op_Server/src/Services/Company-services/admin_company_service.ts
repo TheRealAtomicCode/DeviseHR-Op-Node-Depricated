@@ -54,6 +54,8 @@ export const createCompany = async (
           last_name: reqBody.lastName,
           email: reqBody.email,
           added_by_user: 0,
+          added_by_operator: myId,
+          user_role: 'admin',
         },
       },
     },

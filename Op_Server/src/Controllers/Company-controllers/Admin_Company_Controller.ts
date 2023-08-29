@@ -42,13 +42,13 @@ adminCompanyRouter.post(
 
       res.status(200).send({
         data: company,
-        success: false,
+        success: true,
         message: null,
       });
     } catch (err: any) {
       res.status(200).send({
         data: null,
-        success: true,
+        success: false,
         message: err.message,
       });
     }
