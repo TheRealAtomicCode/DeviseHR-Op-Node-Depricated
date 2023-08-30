@@ -8,6 +8,8 @@ import {
 } from '../../Services/Company-services/admin_company_service';
 import {
   addUserToCompany,
+  editExpiration,
+  editMaxUserAmount,
   toggleTermination,
   updateEmailById,
   updateMainContact,
@@ -121,6 +123,60 @@ manageCompanyRouter.patch(
     try {
       const updatedUser = await toggleTermination(
         req.body.userId,
+        req.userId!
+      );
+
+      res.status(200).send({
+        data: updatedUser,
+        success: true,
+        message: null,
+      });
+    } catch (err: any) {
+      res.status(200).send({
+        data: null,
+        success: false,
+        message: err.message,
+      });
+    }
+  }
+);
+
+manageCompanyRouter.patch(
+  '/edit-expiration',
+  auth,
+  isManager,
+  async (req: IAuthenticatedOpRequest, res: Response) => {
+    try {
+      const updatedUser = await editExpiration(
+        req.body.companyId,
+        req.body.expirationDate,
+        req.userId!
+      );
+
+      res.status(200).send({
+        data: updatedUser,
+        success: true,
+        message: null,
+      });
+    } catch (err: any) {
+      res.status(200).send({
+        data: null,
+        success: false,
+        message: err.message,
+      });
+    }
+  }
+);
+
+manageCompanyRouter.patch(
+  '/edit-max-users',
+  auth,
+  isManager,
+  async (req: IAuthenticatedOpRequest, res: Response) => {
+    try {
+      const updatedUser = await editMaxUserAmount(
+        req.body.companyId,
+        req.body.maxUsersAmount,
         req.userId!
       );
 

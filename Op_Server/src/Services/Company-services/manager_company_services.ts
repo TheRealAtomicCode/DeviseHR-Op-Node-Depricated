@@ -162,9 +162,67 @@ const toggleTermination = async (userId: number, myId: number) => {
   }
 };
 
+const editExpiration = async (
+  companyId: number,
+  expirationDate: Date,
+  myId: number
+) => {
+  try {
+    const updatedCompany = await prisma.companies.update({
+      where: {
+        id: companyId,
+      },
+      data: {
+        expiration_date: expirationDate,
+        updated_at: new Date(),
+        updated_by_operator: myId,
+      },
+      select: {
+        id: true,
+        expiration_date: true,
+      },
+    });
+
+    return updatedCompany;
+  } catch (err: any) {
+    throw new Error('Failed to amend Expiration date for company');
+  }
+};
+
+const editMaxUserAmount = async (
+  companyId: number,
+  maxUserAmount: number,
+  myId: number
+) => {
+  try {
+    const updatedCompany = await prisma.companies.update({
+      where: {
+        id: companyId,
+      },
+      data: {
+        max_users_allowed: maxUserAmount,
+        updated_at: new Date(),
+        updated_by_operator: myId,
+      },
+      select: {
+        id: true,
+        max_users_allowed: true,
+      },
+    });
+
+    return updatedCompany;
+  } catch (err: any) {
+    throw new Error(
+      'Failed to amend total amound of users allowed in company.'
+    );
+  }
+};
+
 export {
   updateEmailById,
   addUserToCompany,
   updateMainContact,
   toggleTermination,
+  editExpiration,
+  editMaxUserAmount,
 };
