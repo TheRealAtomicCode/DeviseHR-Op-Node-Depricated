@@ -8,6 +8,7 @@ import {
 } from '../../Services/Company-services/admin_company_service';
 import {
   addUserToCompany,
+  toggleTermination,
   updateEmailById,
   updateMainContact,
 } from '../../Services/Company-services/manager_company_services';
@@ -99,6 +100,32 @@ manageCompanyRouter.patch(
 
       res.status(200).send({
         data: updatedCompany,
+        success: true,
+        message: null,
+      });
+    } catch (err: any) {
+      res.status(200).send({
+        data: null,
+        success: false,
+        message: err.message,
+      });
+    }
+  }
+);
+
+manageCompanyRouter.patch(
+  '/toggle-termination',
+  auth,
+  isManager,
+  async (req: IAuthenticatedOpRequest, res: Response) => {
+    try {
+      const updatedUser = await toggleTermination(
+        req.body.userId,
+        req.userId!
+      );
+
+      res.status(200).send({
+        data: updatedUser,
         success: true,
         message: null,
       });

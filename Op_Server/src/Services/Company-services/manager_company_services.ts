@@ -115,4 +115,56 @@ const updateMainContact = async (
   }
 };
 
-export { updateEmailById, addUserToCompany, updateMainContact };
+const toggleTermination = async (userId: number, myId: number) => {
+  let user;
+  let updatedUser;
+
+  // no need to check if my id is == user is as i am an operator
+  try {
+    user = await prisma.users.findUniqueOrThrow({
+      where: {
+        id: userId,
+      },
+      select: {
+        id: true,
+        is_terminated: true,
+      },
+    });
+  } catch (err: any) {
+    throw new Error('Failed to locate user.');
+  }
+
+  try {
+    updatedUser = await prisma.users.update({
+      where: {
+        id: userId,
+        companies: {
+          main_contact_id: {
+            not: userId,
+          },
+        },
+      },
+      data: {
+        is_terminated: !user.is_terminated,
+        updated_by_operator: myId,
+        updated_at: new Date(),
+      },
+      select: {
+        id: true,
+        is_terminated: true,
+      },
+    });
+    return updatedUser;
+  } catch (err: any) {
+    throw new Error(
+      'Failed to terminate user, please make sure the user is not a main contact.'
+    );
+  }
+};
+
+export {
+  updateEmailById,
+  addUserToCompany,
+  updateMainContact,
+  toggleTermination,
+};
