@@ -69,4 +69,33 @@ const addUserToCompany = async (
   }
 };
 
-export { updateEmailById, addUserToCompany };
+const updateMainContact = async (
+  companyId: number,
+  userId: number,
+  myId: number
+) => {
+  const company = await prisma.companies.update({
+    where: {
+      id: companyId,
+      users: {
+        some: {
+          id: userId,
+        },
+      },
+    },
+    data: {
+      main_contact_id: userId,
+      updated_at: new Date(),
+      updated_by_operator: myId,
+    },
+    select: {
+      id: true,
+      name: true,
+      main_contact_id: true,
+    },
+  });
+
+  return company;
+};
+
+export { updateEmailById, addUserToCompany, updateMainContact };

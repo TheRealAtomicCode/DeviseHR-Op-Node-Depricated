@@ -9,6 +9,7 @@ import {
 import {
   addUserToCompany,
   updateEmailById,
+  updateMainContact,
 } from '../../Services/Company-services/manager_company_services';
 import {
   generateVerificationCode,
@@ -71,6 +72,33 @@ manageCompanyRouter.post(
 
       res.status(200).send({
         data: addedUser,
+        success: true,
+        message: null,
+      });
+    } catch (err: any) {
+      res.status(200).send({
+        data: null,
+        success: false,
+        message: err.message,
+      });
+    }
+  }
+);
+
+manageCompanyRouter.patch(
+  '/update-main-contact',
+  auth,
+  isManager,
+  async (req: IAuthenticatedOpRequest, res: Response) => {
+    try {
+      const updatedCompany = await updateMainContact(
+        req.body.companyId,
+        req.body.userId,
+        req.userId!
+      );
+
+      res.status(200).send({
+        data: updatedCompany,
         success: true,
         message: null,
       });
