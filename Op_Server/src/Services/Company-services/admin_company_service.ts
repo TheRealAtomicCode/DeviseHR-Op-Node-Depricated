@@ -7,16 +7,20 @@ import {
 import { IAddCompany } from '../../Types/CompanyRequestType';
 
 export const getUserById = async (id: number) => {
-  const user = await prisma.users.findUniqueOrThrow({
-    where: { id },
-    select: {
-      first_name: true,
-      last_name: true,
-      email: true,
-    },
-  });
+  try {
+    const user = await prisma.users.findUniqueOrThrow({
+      where: { id },
+      select: {
+        first_name: true,
+        last_name: true,
+        email: true,
+      },
+    });
 
-  return user;
+    return user;
+  } catch (err: any) {
+    throw new Error('Failed to locate user.');
+  }
 };
 
 export const createCompany = async (
@@ -24,56 +28,68 @@ export const createCompany = async (
   myId: number
 ) => {
   createCompanyFilter(reqBody);
-
-  const company = await prisma.companies.create({
-    data: {
-      name: reqBody.companyName,
-      licence_number: reqBody.licenceNumber,
-      phone_number: reqBody.phoneNumber,
-      expiration_date: reqBody.expirationDate,
-      added_by_operator: myId,
-      max_users_allowed: reqBody.maxEmployeesAllowed,
-      account_number: reqBody.accountNumber,
-      users: {
-        create: {
-          first_name: reqBody.firstName,
-          last_name: reqBody.lastName,
-          email: reqBody.email,
-          added_by_user: 0,
-          added_by_operator: myId,
-          user_role: 'admin',
+  let company;
+  try {
+    company = await prisma.companies.create({
+      data: {
+        name: reqBody.companyName,
+        licence_number: reqBody.licenceNumber,
+        phone_number: reqBody.phoneNumber,
+        expiration_date: reqBody.expirationDate,
+        added_by_operator: myId,
+        max_users_allowed: reqBody.maxEmployeesAllowed,
+        account_number: reqBody.accountNumber,
+        users: {
+          create: {
+            first_name: reqBody.firstName,
+            last_name: reqBody.lastName,
+            email: reqBody.email,
+            added_by_user: 0,
+            added_by_operator: myId,
+            user_role: 'admin',
+          },
         },
       },
-    },
-    select: {
-      id: true,
-      name: true,
-      licence_number: true,
-      phone_number: true,
-      expiration_date: true,
-      added_by_operator: true,
-      max_users_allowed: true,
-      account_number: true,
-      users: {
-        select: {
-          id: true,
-          first_name: true,
-          last_name: true,
-          email: true,
-          added_by_user: true,
+      select: {
+        id: true,
+        name: true,
+        licence_number: true,
+        phone_number: true,
+        expiration_date: true,
+        added_by_operator: true,
+        max_users_allowed: true,
+        account_number: true,
+        users: {
+          select: {
+            id: true,
+            first_name: true,
+            last_name: true,
+            email: true,
+            added_by_user: true,
+          },
         },
       },
-    },
-  });
+    });
+  } catch (err: any) {
+    throw new Error(
+      'Failed to create company as user email, or company account number already exists.'
+    );
+  }
 
-  await prisma.companies.update({
-    where: {
-      id: company.id,
-    },
-    data: {
-      main_contact_id: company.users[0].id,
-    },
-  });
+  try {
+    await prisma.companies.update({
+      where: {
+        id: company.id,
+      },
+      data: {
+        main_contact_id: company.users[0].id,
+      },
+    });
+  } catch (err: any) {
+    throw new Error(
+      'An error occured while updating the main contact to the company.'
+    );
+  }
 
   return company;
 };
@@ -82,18 +98,22 @@ export const updateUserVerificationToken = async (
   userId: number,
   verificationCode: string
 ) => {
-  const user = await prisma.users.update({
-    where: { id: userId },
-    data: {
-      verification_code: verificationCode,
-    },
-    select: {
-      id: true,
-      first_name: true,
-      last_name: true,
-      email: true,
-    },
-  });
+  try {
+    const user = await prisma.users.update({
+      where: { id: userId },
+      data: {
+        verification_code: verificationCode,
+      },
+      select: {
+        id: true,
+        first_name: true,
+        last_name: true,
+        email: true,
+      },
+    });
 
-  return user;
+    return user;
+  } catch (err: any) {
+    throw new Error('Failed to update user verification code.');
+  }
 };

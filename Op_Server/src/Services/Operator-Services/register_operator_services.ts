@@ -8,21 +8,26 @@ const getAndCheckRegistrationProfile = async (
   id: number,
   code: string
 ) => {
-  const query = {
-    where: {
-      id,
-    },
-    select: {
-      id: true,
-      first_name: true,
-      last_name: true,
-      email: true,
-      is_terminated: true,
-      is_verified: true,
-      verfication_code: true,
-    },
-  };
-  const user = await prisma.operators.findUnique(query);
+  let user;
+  try {
+    const query = {
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+        first_name: true,
+        last_name: true,
+        email: true,
+        is_terminated: true,
+        is_verified: true,
+        verfication_code: true,
+      },
+    };
+    user = await prisma.operators.findUnique(query);
+  } catch (err: any) {
+    throw new Error('Failed to locate operator.');
+  }
 
   if (!user || !user.verfication_code || user.is_terminated)
     throw new Error('Invalid Request');
@@ -39,11 +44,16 @@ const createPassword = async (
   code: string,
   checkIsVerifies: boolean
 ) => {
-  const user = await prisma.operators.findUniqueOrThrow({
-    where: {
-      id,
-    },
-  });
+  let user;
+  try {
+    user = await prisma.operators.findUniqueOrThrow({
+      where: {
+        id,
+      },
+    });
+  } catch (err: any) {
+    throw new Error('Failed to locate User.');
+  }
 
   if (!user || user?.is_terminated)
     throw new Error('Invalid request');
@@ -77,14 +87,19 @@ const createPassword = async (
 };
 
 const logMeOut = async (myId: number, refreshToken: string) => {
-  const me = await prisma.operators.findUnique({
-    where: {
-      id: myId,
-    },
-    select: {
-      refresh_tokens: true,
-    },
-  });
+  let me;
+  try {
+    me = await prisma.operators.findUnique({
+      where: {
+        id: myId,
+      },
+      select: {
+        refresh_tokens: true,
+      },
+    });
+  } catch (err: any) {
+    throw new Error('Failed to locate operator for logout.');
+  }
 
   const filteredTokens = me?.refresh_tokens.filter(
     (token) => token != refreshToken
@@ -101,14 +116,18 @@ const logMeOut = async (myId: number, refreshToken: string) => {
 };
 
 const logMeOutAllDevices = async (myId: number) => {
-  await prisma.operators.update({
-    where: {
-      id: myId,
-    },
-    data: {
-      refresh_tokens: [],
-    },
-  });
+  try {
+    await prisma.operators.update({
+      where: {
+        id: myId,
+      },
+      data: {
+        refresh_tokens: [],
+      },
+    });
+  } catch (err: any) {
+    throw new Error('Logout failed.');
+  }
 };
 
 export {

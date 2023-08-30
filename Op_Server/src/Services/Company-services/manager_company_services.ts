@@ -14,24 +14,30 @@ const updateEmailById = async (
   email = email.trim();
   isValidEmail(email);
 
-  const updatedUser = await prisma.users.update({
-    where: {
-      id: userId,
-    },
-    data: {
-      email,
-      updated_at: new Date(),
-      updated_by_operator: myId,
-    },
-    select: {
-      id: true,
-      email: true,
-      updated_at: true,
-      updated_by_operator: true,
-    },
-  });
+  try {
+    const updatedUser = await prisma.users.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        email,
+        updated_at: new Date(),
+        updated_by_operator: myId,
+      },
+      select: {
+        id: true,
+        email: true,
+        updated_at: true,
+        updated_by_operator: true,
+      },
+    });
 
-  return updatedUser;
+    return updatedUser;
+  } catch (err: any) {
+    throw new Error(
+      'Failed to update user as the email already exists, if you are sure the email already exists, please contact the DeviseHR technical support team.'
+    );
+  }
 };
 
 const addUserToCompany = async (
@@ -65,7 +71,9 @@ const addUserToCompany = async (
 
     return addedUser;
   } catch (err: any) {
-    throw new Error('Failed to add user to company');
+    throw new Error(
+      'Failed to add user as the email already exists, if you are sure the email already exists, please contact the DeviseHR technical support team.'
+    );
   }
 };
 
@@ -74,28 +82,37 @@ const updateMainContact = async (
   userId: number,
   myId: number
 ) => {
-  const company = await prisma.companies.update({
-    where: {
-      id: companyId,
-      users: {
-        some: {
-          id: userId,
+  try {
+    const company = await prisma.companies.update({
+      where: {
+        id: companyId,
+        users: {
+          some: {
+            id: userId,
+            is_terminated: false,
+            is_verified: true,
+            user_role: 'admin',
+          },
         },
       },
-    },
-    data: {
-      main_contact_id: userId,
-      updated_at: new Date(),
-      updated_by_operator: myId,
-    },
-    select: {
-      id: true,
-      name: true,
-      main_contact_id: true,
-    },
-  });
+      data: {
+        main_contact_id: userId,
+        updated_at: new Date(),
+        updated_by_operator: myId,
+      },
+      select: {
+        id: true,
+        name: true,
+        main_contact_id: true,
+      },
+    });
 
-  return company;
+    return company;
+  } catch (err: any) {
+    throw new Error(
+      'Unable to update main contact, to update a user as a main contact, the user must be a member of the company, an admin, verified, and not terminated'
+    );
+  }
 };
 
 export { updateEmailById, addUserToCompany, updateMainContact };

@@ -40,37 +40,41 @@ const getCompanyWithUserById = async (id: number) => {
 };
 
 const getUserWithCompanyById = async (id: number) => {
-  const user = await prisma.users.findUniqueOrThrow({
-    where: {
-      id,
-    },
-    select: {
-      id: true,
-      first_name: true,
-      last_name: true,
-      email: true,
-      is_terminated: true,
-      is_verified: true,
-      user_role: true,
-      created_at: true,
-      updated_at: true,
-      added_by_user: true,
-      updated_by_operator: true,
-      updated_by_user: true,
-      login_attempt: true,
-      last_login_time: true,
-      last_active_time: true,
-      companies: {
-        select: {
-          id: true,
-          name: true,
-          expiration_date: true,
+  try {
+    const user = await prisma.users.findUniqueOrThrow({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+        first_name: true,
+        last_name: true,
+        email: true,
+        is_terminated: true,
+        is_verified: true,
+        user_role: true,
+        created_at: true,
+        updated_at: true,
+        added_by_user: true,
+        updated_by_operator: true,
+        updated_by_user: true,
+        login_attempt: true,
+        last_login_time: true,
+        last_active_time: true,
+        companies: {
+          select: {
+            id: true,
+            name: true,
+            expiration_date: true,
+          },
         },
       },
-    },
-  });
+    });
 
-  return user;
+    return user;
+  } catch (err: any) {
+    throw new Error('Failed to locate user.');
+  }
 };
 
 const findCompany = async (searchTerm: string) => {
