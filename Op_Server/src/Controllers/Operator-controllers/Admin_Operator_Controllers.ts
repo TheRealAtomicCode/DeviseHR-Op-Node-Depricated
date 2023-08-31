@@ -10,7 +10,7 @@ import {
   createOperator,
   getAllOperators,
   getOperatorDetails,
-  forgotPasswordService,
+  opForgotPasswordService,
   updateOperatorDetails,
   updateOperatorRole,
 } from '../../Services/Operator-Services/admin_operator_services';
@@ -211,7 +211,10 @@ AdminOperatorConroller.patch(
     try {
       noSelfOperation(req.userId!, req.body.opId);
 
-      const operator = await forgotPasswordService(req.body.opId);
+      const operator = await opForgotPasswordService(
+        req.body.opId,
+        req.userId!
+      );
 
       res.status(201).send({
         data: `A Verifivation code has been send to ${operator.email}`,

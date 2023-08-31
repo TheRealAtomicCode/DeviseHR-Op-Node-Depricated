@@ -32,6 +32,10 @@ export const createCompany = async (
 ) => {
   createCompanyFilter(reqBody);
   let company;
+  if (reqBody.maxEmployeesAllowed <= 0)
+    throw new Error(
+      'you can not create a company with a max amount of employees of zero'
+    );
   try {
     company = await prisma.companies.create({
       data: {

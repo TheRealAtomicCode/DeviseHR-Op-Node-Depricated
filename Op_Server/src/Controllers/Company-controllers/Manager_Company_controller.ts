@@ -10,6 +10,7 @@ import {
   addUserToCompany,
   editExpiration,
   editMaxUserAmount,
+  empForgotPasswordService,
   toggleTermination,
   updateEmailById,
   updateMainContact,
@@ -19,6 +20,7 @@ import {
   sendOperatorRagistration,
   sendUserRagistration,
 } from '../../Functions/node_mailer';
+import noSelfOperation from '../../Middleware/noSelfOperation';
 
 const manageCompanyRouter = Router();
 
@@ -223,6 +225,34 @@ manageCompanyRouter.patch(
       });
     } catch (err: any) {
       res.status(200).send({
+        data: null,
+        success: false,
+        message: err.message,
+      });
+    }
+  }
+);
+
+manageCompanyRouter.patch(
+  '/reset-user-pswd',
+  auth,
+  isManager,
+  async (req: IAuthenticatedOpRequest, res: Response) => {
+    try {
+      noSelfOperation(req.userId!, req.body.userId);
+
+      const user = await empForgotPasswordService(
+        req.body.userId,
+        req.userId!
+      );
+
+      res.status(201).send({
+        data: `A Verifivation code has been send to ${user.email}`,
+        success: false,
+        message: null,
+      });
+    } catch (err: any) {
+      res.status(400).send({
         data: null,
         success: false,
         message: err.message,

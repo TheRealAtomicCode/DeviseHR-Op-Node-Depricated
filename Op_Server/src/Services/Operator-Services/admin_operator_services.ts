@@ -177,7 +177,10 @@ const getOperatorDetails = async (operatorId: number) => {
   return operator;
 };
 
-const forgotPasswordService = async (operatorId: number) => {
+const opForgotPasswordService = async (
+  operatorId: number,
+  myId: number
+) => {
   const verificationCode = generateVerificationCode();
 
   const operator = await prisma.operators.findUniqueOrThrow({
@@ -203,6 +206,7 @@ const forgotPasswordService = async (operatorId: number) => {
     data: {
       verfication_code: verificationCode,
       updated_at: new Date(),
+      updated_by_oprtator: myId,
     },
   });
 
@@ -223,5 +227,5 @@ export {
   updateOperatorRole,
   getAllOperators,
   getOperatorDetails,
-  forgotPasswordService,
+  opForgotPasswordService,
 };

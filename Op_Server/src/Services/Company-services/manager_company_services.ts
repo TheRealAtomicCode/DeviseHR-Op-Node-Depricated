@@ -1,6 +1,10 @@
 import { prisma } from '../../DB/prismaConfig';
 import { addUserFilter } from '../../Functions/filter_functions';
 import {
+  generateVerificationCode,
+  sendOperatorForgetPassword,
+} from '../../Functions/node_mailer';
+import {
   isValidEmail,
   validateNonEmptyStrings,
 } from '../../Helpers/stringValidation';
@@ -195,6 +199,10 @@ const editMaxUserAmount = async (
   myId: number
 ) => {
   try {
+    if (maxUserAmount <= 0)
+      throw new Error(
+        'you can not update a company with a max amount of employees of zero'
+      );
     const updatedCompany = await prisma.companies.update({
       where: {
         id: companyId,
@@ -218,6 +226,50 @@ const editMaxUserAmount = async (
   }
 };
 
+const empForgotPasswordService = async (
+  userId: number,
+  myId: number
+) => {
+  const verificationCode = generateVerificationCode();
+
+  const user = await prisma.users.findUniqueOrThrow({
+    where: { id: userId },
+    select: {
+      is_verified: true,
+      id: true,
+      email: true,
+      first_name: true,
+      last_name: true,
+    },
+  });
+
+  if (!user.is_verified)
+    throw new Error(
+      'Can not reset password for users who are not registered'
+    );
+
+  await prisma.users.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      verification_code: verificationCode,
+      updated_at: new Date(),
+      updated_by_operator: myId,
+    },
+  });
+
+  await sendOperatorForgetPassword(
+    user.id,
+    user.email,
+    user.first_name,
+    user.last_name,
+    verificationCode
+  );
+
+  return user;
+};
+
 export {
   updateEmailById,
   addUserToCompany,
@@ -225,4 +277,5 @@ export {
   toggleTermination,
   editExpiration,
   editMaxUserAmount,
+  empForgotPasswordService,
 };
