@@ -34,26 +34,67 @@ async function seed() {
   });
   client.connect();
   async function insertUser(user) {
-    const query = `
+    try {
+      const opquery = `
       INSERT INTO Operators (first_name, last_name, email, password_hash, profile_picture, is_terminated, user_role, refresh_tokens, is_verified, added_by)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
     `;
 
-    const values = [
-      user.first_name,
-      user.last_name,
-      user.email,
-      user.password_hash,
-      user.profile_picture,
-      user.is_terminated,
-      user.user_role,
-      user.refresh_tokens,
-      true,
-      1,
-    ];
+      const opvalues = [
+        user.first_name,
+        user.last_name,
+        user.email,
+        user.password_hash,
+        user.profile_picture,
+        user.is_terminated,
+        user.user_role,
+        user.refresh_tokens,
+        true,
+        1,
+      ];
 
-    try {
-      await client.query(query, values);
+      await client.query(opquery, opvalues);
+
+      const companiesquery = `
+  INSERT INTO companies (name, licence_number, phone_number, expiration_date, added_by_operator, max_users_allowed, account_number)
+  VALUES ($1, $2, $3, $4, $5, $6, $7)
+  RETURNING id;
+`;
+
+      const companyValues = [
+        'DeviseHR',
+        '222222',
+        '2222222',
+        '2023-12-31T23:59:59Z',
+        1,
+        20,
+        '22222',
+      ];
+
+      const { rows } = await client.query(
+        companiesquery,
+        companyValues
+      );
+      const companyId = rows[0].id;
+
+      const userQuery = `
+  INSERT INTO users (first_name, last_name, email, added_by_user, added_by_operator, user_role, password_hash, is_verified, company_id)
+  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
+`;
+
+      const userValues = [
+        'qader',
+        'baghi',
+        'query.baghi@devisehr.com',
+        20,
+        1,
+        'admin',
+        hashedPassword,
+        true,
+        companyId,
+      ];
+
+      await client.query(userQuery, userValues);
       console.log('User inserted successfully.');
     } catch (error) {
       console.error('Error inserting user:', error);
