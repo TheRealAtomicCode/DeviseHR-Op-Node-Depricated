@@ -17,6 +17,7 @@ import {
 import {
   generateVerificationCode,
   sendOperatorRagistration,
+  sendUserRagistration,
 } from '../../Functions/node_mailer';
 
 const manageCompanyRouter = Router();
@@ -64,7 +65,7 @@ manageCompanyRouter.post(
           verificationCode
         );
 
-        await sendOperatorRagistration(
+        await sendUserRagistration(
           updatedUser.id,
           updatedUser.email,
           updatedUser.first_name,
@@ -94,13 +95,23 @@ manageCompanyRouter.get(
   isManager,
   async (req: IAuthenticatedOpRequest, res: Response) => {
     try {
+      const user = await getUserById(Number(req.params.id));
+
+      if (!user) throw new Error('Failed to locate user.');
+
+      if (user.is_terminated)
+        throw new Error('Can not register a terminated user');
+
+      if (user.is_verified)
+        throw new Error('User Already registered');
+
       const verificationCode = generateVerificationCode();
       const updatedUser = await updateUserVerificationToken(
         Number(req.params.id),
         verificationCode
       );
 
-      await sendOperatorRagistration(
+      await sendUserRagistration(
         updatedUser.id,
         updatedUser.email,
         updatedUser.first_name,

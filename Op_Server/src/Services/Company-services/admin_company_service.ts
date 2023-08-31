@@ -15,6 +15,8 @@ export const getUserById = async (id: number) => {
         first_name: true,
         last_name: true,
         email: true,
+        is_verified: true,
+        is_terminated: true,
       },
     });
 
