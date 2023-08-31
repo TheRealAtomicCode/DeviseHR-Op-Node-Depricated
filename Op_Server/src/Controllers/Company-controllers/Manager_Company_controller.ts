@@ -59,22 +59,57 @@ manageCompanyRouter.post(
 
       if (req.body.sendRegistration) {
         const verificationCode = generateVerificationCode();
-        const updatedOperator = await updateUserVerificationToken(
+        const updatedUser = await updateUserVerificationToken(
           addedUser.id,
           verificationCode
         );
 
         await sendOperatorRagistration(
-          updatedOperator.id,
-          updatedOperator.email,
-          updatedOperator.first_name,
-          updatedOperator.last_name,
+          updatedUser.id,
+          updatedUser.email,
+          updatedUser.first_name,
+          updatedUser.last_name,
           verificationCode
         );
       }
 
       res.status(200).send({
         data: addedUser,
+        success: true,
+        message: null,
+      });
+    } catch (err: any) {
+      res.status(200).send({
+        data: null,
+        success: false,
+        message: err.message,
+      });
+    }
+  }
+);
+
+manageCompanyRouter.get(
+  '/register-user/:id',
+  auth,
+  isManager,
+  async (req: IAuthenticatedOpRequest, res: Response) => {
+    try {
+      const verificationCode = generateVerificationCode();
+      const updatedUser = await updateUserVerificationToken(
+        Number(req.params.id),
+        verificationCode
+      );
+
+      await sendOperatorRagistration(
+        updatedUser.id,
+        updatedUser.email,
+        updatedUser.first_name,
+        updatedUser.last_name,
+        verificationCode
+      );
+
+      res.status(200).send({
+        data: updatedUser,
         success: true,
         message: null,
       });
