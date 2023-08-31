@@ -101,6 +101,15 @@ export const updateUserVerificationToken = async (
   userId: number,
   verificationCode: string
 ) => {
+  const user = await getUserById(userId);
+
+  if (!user) throw new Error('Failed to locate user.');
+
+  if (user.is_terminated)
+    throw new Error('Can not register a terminated user');
+
+  if (user.is_verified) throw new Error('User Already registered');
+
   try {
     const user = await prisma.users.update({
       where: { id: userId },
