@@ -1,12 +1,12 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import path from 'path';
 
 // * controllers
 import LogOperatorController from './Controllers/Operator-controllers/Log_Operator_Controller';
 import OperatorsController from './Controllers/Operator-controllers/Operators_Controller';
 import AdminOperatorConroller from './Controllers/Operator-controllers/Admin_Operator_Controllers';
-import path from 'path';
 import OperatorRegistrationController from './Controllers/Operator-controllers/Operator_Registration_Controller';
 import adminCompanyRouter from './Controllers/Company-controllers/Admin_Company_Controller';
 import companyRouter from './Controllers/Company-controllers/Company_Controller';

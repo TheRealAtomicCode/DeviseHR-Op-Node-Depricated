@@ -1,12 +1,13 @@
-DROP TABLE Users;
-DROP TABLE Companies;
-DROP TABLE Notes;
-DROP TABLE Operators;
-DROP TYPE operator_role_enum;
-DROP TYPE user_role_enum;
+DROP TABLE IF EXISTS Hierarchies;
+DROP TABLE IF EXISTS Roles;
+DROP TABLE IF EXISTS Users;
+DROP TABLE IF EXISTS Companies;
+DROP TABLE IF EXISTS Notes;
+DROP TABLE IF EXISTS Operators;
+DROP TYPE IF EXISTS operator_role_enum;
+
 
 CREATE TYPE operator_role_enum AS ENUM ('root', 'sudo', 'admin', 'manager', 'employee');
-CREATE TYPE user_role_enum AS ENUM ('admin', 'manager', 'employee');
 
 CREATE TABLE Operators (
   id SERIAL PRIMARY KEY,
@@ -85,7 +86,7 @@ CREATE TABLE Users (
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   refresh_tokens TEXT[] DEFAULT ARRAY[]::TEXT[],
-  user_role user_role_enum NOT NULL,
+  role_id INTEGER NOT NULL DEFAULT 0 CHECK (role_id >= -1), -- admin -1, employee 0, manager any other number references a role,
   ni_no VARCHAR(60),
   drivers_licence_number VARCHAR(60),
   drivers_licence_expiration_date DATE,
@@ -107,3 +108,37 @@ CREATE TABLE Users (
   company_id INTEGER,
   FOREIGN KEY (company_id) REFERENCES Companies (id)
 );
+
+CREATE TABLE Hierarchies (
+    manager_id INTEGER,
+    subordinate_id INTEGER,
+    CONSTRAINT fk_manager FOREIGN KEY (manager_id) REFERENCES Users (id),
+    CONSTRAINT fk_subordinate FOREIGN KEY (subordinate_id) REFERENCES Users (id),
+    CONSTRAINT pk_hierarchies PRIMARY KEY (manager_id, subordinate_id),
+    CHECK (manager_id <> subordinate_id)
+);
+
+CREATE TABLE Roles (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(60) NOT NULL,
+  enable_add_employees BOOLEAN NOT NULL DEFAULT false,
+  enable_terminate_employees BOOLEAN NOT NULL DEFAULT false,
+  enable_delete_employee BOOLEAN NOT NULL DEFAULT false,
+  enable_create_pattern BOOLEAN NOT NULL DEFAULT false,
+  enable_approve_absence BOOLEAN NOT NULL DEFAULT false,
+  enable_add_manditory_leave BOOLEAN NOT NULL DEFAULT false,
+  enable_approve_leave_requests BOOLEAN NOT NULL DEFAULT false,
+  enable_add_lateness BOOLEAN NOT NULL DEFAULT false,
+  enable_create_rotas BOOLEAN NOT NULL DEFAULT false,
+  enable_view_employee_notifications BOOLEAN NOT NULL DEFAULT false,
+  enable_view_employee_salary BOOLEAN NOT NULL DEFAULT false,
+  enable_view_employee_sensitive_information BOOLEAN NOT NULL DEFAULT false,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  added_by INT,
+  updated_by INT,
+  company_id INTEGER,
+  FOREIGN KEY (company_id) REFERENCES Companies (id)
+);
+
+

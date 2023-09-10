@@ -10,6 +10,7 @@ import {
 import {
   generateVerificationCode,
   sendOperatorRagistration,
+  sendUserRagistration,
 } from '../../Functions/node_mailer';
 
 const adminCompanyRouter = Router();
@@ -31,7 +32,7 @@ adminCompanyRouter.post(
           verificationCode
         );
 
-        await sendOperatorRagistration(
+        await sendUserRagistration(
           updatedOperator.id,
           updatedOperator.email,
           updatedOperator.first_name,
@@ -55,7 +56,7 @@ adminCompanyRouter.post(
   }
 );
 
-// * Create company
+// * resend user registration
 adminCompanyRouter.get(
   '/send-user-registration/:userId',
   auth,
@@ -71,7 +72,7 @@ adminCompanyRouter.get(
         verificationCode
       );
 
-      await sendOperatorRagistration(
+      await sendUserRagistration(
         updatedUser.id,
         updatedUser.email,
         updatedUser.first_name,

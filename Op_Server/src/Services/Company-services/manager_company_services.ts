@@ -3,6 +3,7 @@ import { addUserFilter } from '../../Functions/filter_functions';
 import {
   generateVerificationCode,
   sendOperatorForgetPassword,
+  sendUserForgetPassword,
 } from '../../Functions/node_mailer';
 import {
   isValidEmail,
@@ -58,7 +59,7 @@ const addUserToCompany = async (
         email: reqBody.email,
         added_by_operator: myId,
         added_by_user: 0,
-        user_role: reqBody.userRole,
+        role_id: reqBody.userRole,
         company_id: reqBody.companyId,
       },
       select: {
@@ -68,7 +69,7 @@ const addUserToCompany = async (
         email: true,
         added_by_operator: true,
         added_by_user: true,
-        user_role: true,
+        role_id: true,
         company_id: true,
       },
     });
@@ -95,7 +96,7 @@ const updateMainContact = async (
             id: userId,
             is_terminated: false,
             is_verified: true,
-            user_role: 'admin',
+            role_id: -1,
           },
         },
       },
@@ -259,7 +260,7 @@ const empForgotPasswordService = async (
     },
   });
 
-  await sendOperatorForgetPassword(
+  await sendUserForgetPassword(
     user.id,
     user.email,
     user.first_name,
