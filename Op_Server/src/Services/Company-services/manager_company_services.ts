@@ -59,7 +59,7 @@ const addUserToCompany = async (
         email: reqBody.email,
         added_by_operator: myId,
         added_by_user: 0,
-        role_id: reqBody.userRole,
+        user_role: reqBody.userRole,
         company_id: reqBody.companyId,
       },
       select: {
@@ -96,7 +96,7 @@ const updateMainContact = async (
             id: userId,
             is_terminated: false,
             is_verified: true,
-            role_id: -1,
+            user_role: 'admin',
           },
         },
       },

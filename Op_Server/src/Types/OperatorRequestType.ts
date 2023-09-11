@@ -35,7 +35,7 @@ export interface IAddUserRequest {
   firstName: string;
   lastName: string;
   email: string;
-  userRole: -1 | 0;
+  userRole: 'admin' | 'employee';
   companyId: number;
   sendRegistration: boolean;
 }

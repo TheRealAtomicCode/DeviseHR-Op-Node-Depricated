@@ -1,13 +1,14 @@
 DROP TABLE IF EXISTS Hierarchies;
-DROP TABLE IF EXISTS Roles;
 DROP TABLE IF EXISTS Users;
+DROP TABLE IF EXISTS Roles;
 DROP TABLE IF EXISTS Companies;
 DROP TABLE IF EXISTS Notes;
 DROP TABLE IF EXISTS Operators;
 DROP TYPE IF EXISTS operator_role_enum;
-
+DROP TYPE IF EXISTS user_role_enum;
 
 CREATE TYPE operator_role_enum AS ENUM ('root', 'sudo', 'admin', 'manager', 'employee');
+CREATE TYPE user_role_enum AS ENUM ('admin', 'manager', 'employee');
 
 CREATE TABLE Operators (
   id SERIAL PRIMARY KEY,
@@ -72,52 +73,6 @@ CREATE TABLE Companies (
   updated_by_operator INT
 );
 
-CREATE TABLE Users (
-  id SERIAL PRIMARY KEY,
-  first_name VARCHAR(20) NOT NULL,
-  last_name VARCHAR(20) NOT NULL,
-  title VARCHAR(20),
-  email VARCHAR(60) NOT NULL UNIQUE,
-  password_hash VARCHAR(60),
-  date_of_birth DATE,
-  profile_picture TEXT,
-  is_terminated BOOLEAN NOT NULL DEFAULT false,
-  is_verified BOOLEAN NOT NULL DEFAULT false,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  refresh_tokens TEXT[] DEFAULT ARRAY[]::TEXT[],
-  role_id INTEGER NOT NULL DEFAULT 0 CHECK (role_id >= -1), -- admin -1, employee 0, manager any other number references a role,
-  ni_no VARCHAR(60),
-  drivers_licence_number VARCHAR(60),
-  drivers_licence_expiration_date DATE,
-  passport_number VARCHAR(60),
-  passport_expiration_date DATE,
-  enable_reminders BOOLEAN NOT NULL DEFAULT false,
-  enable_birthday_reminder BOOLEAN NOT NULL DEFAULT false,
-  enable_receive_requests BOOLEAN NOT NULL DEFAULT false,
-  enable_receive_requests_from_my_department BOOLEAN NOT NULL DEFAULT false,
-  contracted_leave_start_date DATE,
-  added_by_operator INT NOT NULL,
-  added_by_user INT NOT NULL,
-  updated_by_operator INT,
-  updated_by_user INT,
-  verification_code VARCHAR(10),
-  login_attempt SMALLINT DEFAULT 0, 
-  last_login_time TIMESTAMP,
-  last_active_time TIMESTAMP,
-  company_id INTEGER,
-  FOREIGN KEY (company_id) REFERENCES Companies (id)
-);
-
-CREATE TABLE Hierarchies (
-    manager_id INTEGER,
-    subordinate_id INTEGER,
-    CONSTRAINT fk_manager FOREIGN KEY (manager_id) REFERENCES Users (id),
-    CONSTRAINT fk_subordinate FOREIGN KEY (subordinate_id) REFERENCES Users (id),
-    CONSTRAINT pk_hierarchies PRIMARY KEY (manager_id, subordinate_id),
-    CHECK (manager_id <> subordinate_id)
-);
-
 CREATE TABLE Roles (
   id SERIAL PRIMARY KEY,
   name VARCHAR(60) NOT NULL,
@@ -140,5 +95,59 @@ CREATE TABLE Roles (
   company_id INTEGER,
   FOREIGN KEY (company_id) REFERENCES Companies (id)
 );
+
+CREATE TABLE Users (
+  id SERIAL PRIMARY KEY,
+  first_name VARCHAR(20) NOT NULL,
+  last_name VARCHAR(20) NOT NULL,
+  title VARCHAR(20),
+  email VARCHAR(60) NOT NULL UNIQUE,
+  password_hash VARCHAR(60),
+  date_of_birth DATE,
+  profile_picture TEXT,
+  is_terminated BOOLEAN NOT NULL DEFAULT false,
+  is_verified BOOLEAN NOT NULL DEFAULT false,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  refresh_tokens TEXT[] DEFAULT ARRAY[]::TEXT[],
+  ni_no VARCHAR(60),
+  drivers_licence_number VARCHAR(60),
+  drivers_licence_expiration_date DATE,
+  passport_number VARCHAR(60),
+  passport_expiration_date DATE,
+  enable_reminders BOOLEAN NOT NULL DEFAULT false,
+  enable_birthday_reminder BOOLEAN NOT NULL DEFAULT false,
+  enable_receive_requests BOOLEAN NOT NULL DEFAULT false,
+  enable_receive_requests_from_my_department BOOLEAN NOT NULL DEFAULT false,
+  contracted_leave_start_date DATE,
+  added_by_operator INT NOT NULL,
+  added_by_user INT NOT NULL,
+  updated_by_operator INT,
+  updated_by_user INT,
+  verification_code VARCHAR(10),
+  login_attempt SMALLINT DEFAULT 0, 
+  last_login_time TIMESTAMP,
+  last_active_time TIMESTAMP,
+  user_role user_role_enum NOT NULL,
+  company_id INTEGER,
+  role_id INTEGER,
+  FOREIGN KEY (company_id) REFERENCES Companies (id),
+  FOREIGN KEY (role_id) REFERENCES Roles (id),
+  CONSTRAINT check_user_role CHECK (
+    (user_role IN ('admin', 'employee') AND role_id IS NULL) OR
+    (user_role = 'manager' AND role_id IS NOT NULL)
+  )
+);
+
+CREATE TABLE Hierarchies (
+    manager_id INTEGER,
+    subordinate_id INTEGER,
+    CONSTRAINT fk_manager FOREIGN KEY (manager_id) REFERENCES Users (id),
+    CONSTRAINT fk_subordinate FOREIGN KEY (subordinate_id) REFERENCES Users (id),
+    CONSTRAINT pk_hierarchies PRIMARY KEY (manager_id, subordinate_id),
+    CHECK (manager_id <> subordinate_id)
+);
+
+
 
 
