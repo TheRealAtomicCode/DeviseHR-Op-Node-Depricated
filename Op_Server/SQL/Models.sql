@@ -73,6 +73,7 @@ CREATE TABLE Companies (
   updated_by_operator INT
 );
 
+
 CREATE TABLE Roles (
   id SERIAL PRIMARY KEY,
   name VARCHAR(60) NOT NULL,
@@ -82,11 +83,10 @@ CREATE TABLE Roles (
   enable_create_pattern BOOLEAN NOT NULL DEFAULT false,
   enable_approve_absence BOOLEAN NOT NULL DEFAULT false,
   enable_add_manditory_leave BOOLEAN NOT NULL DEFAULT false,
-  enable_approve_leave_requests BOOLEAN NOT NULL DEFAULT false,
   enable_add_lateness BOOLEAN NOT NULL DEFAULT false,
   enable_create_rotas BOOLEAN NOT NULL DEFAULT false,
   enable_view_employee_notifications BOOLEAN NOT NULL DEFAULT false,
-  enable_view_employee_salary BOOLEAN NOT NULL DEFAULT false,
+  enable_view_employee_payroll BOOLEAN NOT NULL DEFAULT false,
   enable_view_employee_sensitive_information BOOLEAN NOT NULL DEFAULT false,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

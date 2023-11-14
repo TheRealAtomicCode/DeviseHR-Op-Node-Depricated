@@ -71,11 +71,21 @@ async function seed() {
         '22222',
       ];
 
+      const company2Values = [
+        'DeviseMD',
+        '222221',
+        '2222223',
+        '2023-12-31T23:59:59Z',
+        1,
+        20,
+        '22221',
+      ];
+
       const { rows } = await client.query(
         companiesquery,
         companyValues
       );
-      const companyId = rows[0].id;
+      let companyId = rows[0].id;
 
       const userQuery = `
   INSERT INTO users (first_name, last_name, email, added_by_user, added_by_operator, user_role, password_hash, is_verified, company_id)
@@ -83,9 +93,9 @@ async function seed() {
 `;
 
       const userValues = [
-        'qader',
-        'baghi',
-        'query.baghi@devisehr.com',
+        'user1',
+        'HR',
+        'user1@devisehr.com',
         20,
         1,
         'admin',
@@ -95,7 +105,71 @@ async function seed() {
       ];
 
       await client.query(userQuery, userValues);
-      console.log('User inserted successfully.');
+      console.log('User inserted successfully 1 company 1.');
+
+      const user2Query = `
+  INSERT INTO users (first_name, last_name, email, added_by_user, added_by_operator, user_role, password_hash, is_verified, company_id)
+  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
+`;
+
+      const user2Values = [
+        'user2',
+        'hr',
+        'user2@devisehr.com',
+        20,
+        1,
+        'admin',
+        hashedPassword,
+        true,
+        companyId,
+      ];
+
+      await client.query(user2Query, user2Values);
+      console.log('User inserted successfully 2 company 2.');
+
+      const roo = await client.query(companiesquery, company2Values);
+
+      companyId = roo.rows[0].id;
+
+      const user3Query = `
+  INSERT INTO users (first_name, last_name, email, added_by_user, added_by_operator, user_role, password_hash, is_verified, company_id)
+  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
+`;
+
+      const user3Values = [
+        'user1',
+        'md',
+        'user3@devisehr.com',
+        20,
+        1,
+        'admin',
+        hashedPassword,
+        true,
+        companyId,
+      ];
+
+      await client.query(user3Query, user3Values);
+      console.log('User inserted successfully 3 company 3.');
+
+      const user4Query = `
+      INSERT INTO users (first_name, last_name, email, added_by_user, added_by_operator, user_role, password_hash, is_verified, company_id)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
+    `;
+
+      const user4Values = [
+        'user2',
+        'md',
+        'user4@devisehr.com',
+        20,
+        1,
+        'admin',
+        hashedPassword,
+        true,
+        companyId,
+      ];
+
+      await client.query(user4Query, user4Values);
+      console.log('User inserted successfully 3 company 3.');
     } catch (error) {
       console.error('Error inserting user:', error);
     } finally {
