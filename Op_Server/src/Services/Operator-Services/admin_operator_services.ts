@@ -149,6 +149,7 @@ const getAllOperators = async () => {
       profile_picture: true,
       is_verified: true,
       updated_at: true,
+      is_terminated: true,
     },
   });
 
