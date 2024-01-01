@@ -78,10 +78,16 @@ const genarateOperatorAuthToken = async (user: operators) => {
   );
 
   const refreshToken = sign(
-    { id: user.id.toString(), userRole: user.user_role },
+    {
+      id: user.id.toString(),
+      userRole: user.user_role,
+      firstName: user.first_name,
+      lastName: user.last_name,
+      email: user.email,
+    },
     process.env.JWT_REFRESH_SECRET!,
     {
-      expiresIn: process.env.EXPTIME!,
+      expiresIn: process.env.ONLOGINEXPIRETIME!,
     }
   );
 

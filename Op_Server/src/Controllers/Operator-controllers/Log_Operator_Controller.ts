@@ -10,6 +10,7 @@ import {
   logMeOut,
   logMeOutAllDevices,
 } from '../../Services/Operator-Services/register_operator_services';
+import refreshAuth from '../../Middleware/refreshAuth';
 
 const LogOperatorController = Router();
 
@@ -53,7 +54,7 @@ LogOperatorController.post(
 // * refresh
 LogOperatorController.post(
   '/refresh',
-  auth,
+  refreshAuth,
   async (req: IAuthenticatedOpRequest, res: Response) => {
     try {
       const { refreshedUser, newRefreshToken, newToken } =
