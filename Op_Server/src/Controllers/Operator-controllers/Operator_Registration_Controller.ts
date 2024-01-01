@@ -7,7 +7,7 @@ import {
 
 const OperatorRegistrationController = Router();
 
-// * regester my account step 1
+// * register my account step 1
 OperatorRegistrationController.get(
   '/register',
   async (req: Request, res: Response) => {
@@ -94,18 +94,6 @@ OperatorRegistrationController.patch(
       );
 
       res.status(200).send(updatedOperator);
-    } catch (err: any) {
-      if (isEmptyObject(err)) res.status(400).send(err.message);
-      else res.status(400).send(err);
-    }
-  }
-);
-
-OperatorRegistrationController.get(
-  '/login',
-  async (req: Request, res: Response) => {
-    try {
-      res.status(200).render('login');
     } catch (err: any) {
       if (isEmptyObject(err)) res.status(400).send(err.message);
       else res.status(400).send(err);

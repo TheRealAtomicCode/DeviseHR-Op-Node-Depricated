@@ -9,23 +9,65 @@ const refreshAuth = async (
   next: NextFunction
 ) => {
   try {
-    const token = req.header('Authorization')?.replace('Bearer ', '');
+    const urlToken = req.query['from-url'];
+    const cookieToken = req.query['from-cookie'];
+    let decodedToken: DecodedToken | null = null;
+    let returnedToken: string | null = null;
 
-    const urlToken = req.query['from-url']
-      ?.toString()
-      .replace('Bearer ', '');
-    const cookieToken = req.cookies['from-cookie']
-      ?.toString()
-      .replace('Bearer ', '');
+    if (!urlToken && !cookieToken) {
+      throw new Error('Please Authenticate');
+    }
 
-    if (!urlToken) throw new Error('Please Authenticate');
-    const decode = (await verify(
-      urlToken,
-      process.env.JWT_REFRESH_SECRET!
-    )) as DecodedToken;
+    if (urlToken && cookieToken) {
+      const verifyTokenAndSetDecodedUser = async (token: string) => {
+        try {
+          decodedToken = (await verify(
+            token.toString().replace('Bearer ', ''),
+            process.env.JWT_REFRESH_SECRET!
+          )) as DecodedToken;
 
-    req.decodedUser = decode;
-    req.userId = Number(decode.id);
+          returnedToken = token;
+          return true; // Token verification succeeded
+        } catch (error) {
+          console.error('Token verification failed:', error);
+          return false; // Token verification failed
+        }
+      };
+
+      // Try cookieToken verification first
+      const isCookieTokenVerified =
+        await verifyTokenAndSetDecodedUser(cookieToken.toString());
+
+      if (!isCookieTokenVerified) {
+        // If cookieToken verification failed, try urlToken verification
+        await verifyTokenAndSetDecodedUser(urlToken.toString());
+      }
+    }
+
+    if (urlToken && !cookieToken) {
+      decodedToken = (await verify(
+        urlToken.toString().replace('Bearer ', ''),
+        process.env.JWT_REFRESH_SECRET!
+      )) as DecodedToken;
+
+      returnedToken = urlToken.toString();
+    }
+
+    if (!urlToken && cookieToken) {
+      decodedToken = (await verify(
+        cookieToken.toString().replace('Bearer ', ''),
+        process.env.JWT_REFRESH_SECRET!
+      )) as DecodedToken;
+
+      returnedToken = cookieToken.toString();
+    }
+
+    if (!decodedToken || !returnedToken)
+      throw new Error('Please Authenticate');
+
+    req.decodedUser = decodedToken;
+    req.userId = Number(decodedToken!.id);
+    req.refreshToken = returnedToken;
 
     next();
   } catch (err: any) {
