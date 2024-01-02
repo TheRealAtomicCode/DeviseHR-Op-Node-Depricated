@@ -3,13 +3,9 @@ import {
   addOperatorFilter,
   updateOperatorFilter,
 } from '../../Functions/filter_functions';
-import {
-  generateVerificationCode,
-  sendOperatorForgetPassword,
-  sendOperatorRagistration,
-} from '../../Functions/node_mailer';
+import { sendOperatorForgetPassword } from '../../Functions/node_mailer';
+import { generateVerificationCode } from '../../Helpers/generateVerificationCode';
 import { validateNonEmptyStrings } from '../../Helpers/stringValidation';
-import { UserRole } from '../../Types/GeneralTypes';
 import {
   ICreateOperatorRequest,
   IUpdateOperatorRequestBody,

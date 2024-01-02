@@ -7,11 +7,8 @@ import {
   getUserById,
   updateUserVerificationToken,
 } from '../../Services/Company-services/admin_company_service';
-import {
-  generateVerificationCode,
-  sendOperatorRagistration,
-  sendUserRagistration,
-} from '../../Functions/node_mailer';
+import { sendUserRagistration } from '../../Functions/node_mailer';
+import { generateVerificationCode } from '../../Helpers/generateVerificationCode';
 
 const adminCompanyRouter = Router();
 

@@ -1,7 +1,5 @@
-import { verify } from 'jsonwebtoken';
 import { prisma } from '../../DB/prismaConfig';
 import { isStrongPassword } from '../../Helpers/stringValidation';
-import { DecodedVerificationToken } from '../../Types/GeneralTypes';
 import { hash } from 'bcrypt';
 
 const getAndCheckRegistrationProfile = async (
@@ -13,6 +11,7 @@ const getAndCheckRegistrationProfile = async (
     const query = {
       where: {
         id,
+        verfication_code: code,
       },
       select: {
         id: true,
@@ -43,7 +42,6 @@ const getAndCheckRegistrationProfile = async (
 const createPassword = async (
   id: number,
   password: string,
-  code: string,
   checkIsVerifies: boolean
 ) => {
   let user;
@@ -63,9 +61,6 @@ const createPassword = async (
   if (checkIsVerifies) {
     if (user.is_verified) throw new Error('Invalid request');
   }
-
-  if (user.verfication_code !== code)
-    throw new Error('Invalid request.');
 
   password = password.trim();
   isStrongPassword(password);

@@ -21,7 +21,7 @@ const PORT = process.env.PORT || 5000;
 const viewsPath = path.join(__dirname, 'Views');
 
 // * operator routers
-app.use('/registration', OperatorRegistrationController);
+app.use('/api/registration', OperatorRegistrationController);
 app.use('/api/operator-logging', LogOperatorController);
 app.use('/api/operators', OperatorsController);
 app.use('/api/admin-operators', AdminOperatorConroller);
@@ -32,5 +32,5 @@ app.set('view engine', 'hbs');
 app.set('views', viewsPath);
 
 app.listen(PORT, () => {
-  console.log(`Server up and running on port: ${PORT}`);
+  console.log(`Server up and running on: http://127.0.0.1:${PORT}`);
 });

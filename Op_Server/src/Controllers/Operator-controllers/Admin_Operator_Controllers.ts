@@ -2,10 +2,7 @@ import { Response, Router } from 'express';
 import { IAuthenticatedOpRequest } from '../../Types/OperatorRequestType';
 import auth from '../../Middleware/auth';
 import { isAdmin } from '../../Middleware/authorization';
-import {
-  generateVerificationCode,
-  sendOperatorRagistration,
-} from '../../Functions/node_mailer';
+import { sendOperatorRagistration } from '../../Functions/node_mailer';
 import {
   createOperator,
   getAllOperators,
@@ -14,8 +11,9 @@ import {
   updateOperatorDetails,
   updateOperatorRole,
 } from '../../Services/Operator-Services/admin_operator_services';
-import { updateVerificationToken } from '../../Services/Operator-Services/operator_services';
-import noSelfOperation from '../../Middleware/noSelfOperation';
+import noSelfOperation from '../../Functions/noSelfOperation';
+import { updateVerificationToken } from '../../Functions/createTokens';
+import { generateVerificationCode } from '../../Helpers/generateVerificationCode';
 
 const AdminOperatorConroller = Router();
 

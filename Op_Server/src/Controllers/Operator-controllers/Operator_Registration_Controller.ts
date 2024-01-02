@@ -4,22 +4,23 @@ import {
   createPassword,
   getAndCheckRegistrationProfile,
 } from '../../Services/Operator-Services/register_operator_services';
-import { genarateOperatorRegistrationToken } from '../../Services/Operator-Services/operator_services';
 import auth from '../../Middleware/auth';
+import { IAuthenticatedOpRequest } from '../../Types/OperatorRequestType';
+import { genarateOperatorRegistrationToken } from '../../Functions/createTokens';
 
 const OperatorRegistrationController = Router();
 
 // * register my account step 1
-OperatorRegistrationController.get(
+OperatorRegistrationController.post(
   '/register',
   async (req: Request, res: Response) => {
     try {
-      if (!req.query.operatorId || !req.query.code)
+      if (!req.body.operatorId || !req.body.code)
         throw new Error('Invalid Request.');
 
       const operator = await getAndCheckRegistrationProfile(
-        Number(req.query.operatorId),
-        String(req.query.code)
+        Number(req.body.operatorId),
+        String(req.body.code)
       );
 
       const registrationToken =
@@ -31,7 +32,12 @@ OperatorRegistrationController.get(
       });
     } catch (err: any) {
       if (isEmptyObject(err)) res.status(400).send(err.message);
-      else res.status(400).send(err);
+      else
+        res.status(400).send({
+          data: null,
+          success: false,
+          message: err.message,
+        });
     }
   }
 );
@@ -45,8 +51,8 @@ OperatorRegistrationController.get(
         throw new Error('Invalid Request.');
 
       const operator = await getAndCheckRegistrationProfile(
-        Number(req.query.operatorId),
-        String(req.query.code)
+        Number(req.body.operatorId),
+        String(req.body.code)
       );
 
       const registrationToken =
@@ -58,7 +64,11 @@ OperatorRegistrationController.get(
       });
     } catch (err: any) {
       if (isEmptyObject(err)) res.status(400).send(err.message);
-      else res.status(400).send(err);
+      res.status(400).send({
+        data: null,
+        success: false,
+        message: err.message,
+      });
     }
   }
 );
@@ -68,12 +78,11 @@ OperatorRegistrationController.get(
 OperatorRegistrationController.patch(
   '/registeration-confirmed',
   auth,
-  async (req: Request, res: Response) => {
+  async (req: IAuthenticatedOpRequest, res: Response) => {
     try {
       const updatedOperator = await createPassword(
-        Number(req.body.operatorId),
+        Number(req.userId),
         req.body.password,
-        req.body.verificationCode,
         true
       );
 
@@ -90,12 +99,11 @@ OperatorRegistrationController.patch(
 OperatorRegistrationController.patch(
   '/reset-password-confermiation',
   auth,
-  async (req: Request, res: Response) => {
+  async (req: IAuthenticatedOpRequest, res: Response) => {
     try {
       const updatedOperator = await createPassword(
-        Number(req.body.operatorId),
+        Number(req.userId),
         req.body.password,
-        req.body.verificationCode,
         false
       );
 

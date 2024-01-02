@@ -2,10 +2,7 @@ import { Response, Router } from 'express';
 import auth from '../../Middleware/auth';
 import { isManager } from '../../Middleware/authorization';
 import { IAuthenticatedOpRequest } from '../../Types/OperatorRequestType';
-import {
-  getUserById,
-  updateUserVerificationToken,
-} from '../../Services/Company-services/admin_company_service';
+import { updateUserVerificationToken } from '../../Services/Company-services/admin_company_service';
 import {
   addUserToCompany,
   editExpiration,
@@ -15,12 +12,9 @@ import {
   updateEmailById,
   updateMainContact,
 } from '../../Services/Company-services/manager_company_services';
-import {
-  generateVerificationCode,
-  sendOperatorRagistration,
-  sendUserRagistration,
-} from '../../Functions/node_mailer';
-import noSelfOperation from '../../Middleware/noSelfOperation';
+import { sendUserRagistration } from '../../Functions/node_mailer';
+import noSelfOperation from '../../Functions/noSelfOperation';
+import { generateVerificationCode } from '../../Helpers/generateVerificationCode';
 
 const manageCompanyRouter = Router();
 

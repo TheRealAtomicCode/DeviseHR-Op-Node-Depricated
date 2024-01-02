@@ -1,12 +1,7 @@
-import { compare, hash } from 'bcrypt';
-import { prisma, operators } from '../../DB/prismaConfig';
-import { sign, verify } from 'jsonwebtoken';
-import client from '../../DB/connection';
-import { Prisma, users } from '@prisma/client';
-import verifyAccess from '../../Middleware/verify_access';
-import deleteAllRefreshTokens from '../../Functions/delete_add_refresh_tokens';
-import { DecodedVerificationToken } from '../../Types/GeneralTypes';
-import { isStrongPassword } from '../../Helpers/stringValidation';
+import { compare } from 'bcrypt';
+import { prisma } from '../../DB/prismaConfig';
+import { sign } from 'jsonwebtoken';
+import verifyAccess from '../../Functions/verify_access';
 
 // * get operator by id
 const getOperatorById = async (id: number) => {
@@ -59,67 +54,6 @@ const findOperatorByCredentials = async (
   }
 
   return user;
-};
-
-//! move to seperate file
-// * generate and add refresh token with jwt and add refresh token to db
-const genarateOperatorAuthToken = async (user: operators) => {
-  const token = await sign(
-    {
-      id: user.id.toString(),
-      userRole: user.user_role,
-      firstName: user.first_name,
-      lastName: user.last_name,
-      email: user.email,
-    },
-    process.env.JWT_SECRET!,
-    {
-      expiresIn: process.env.EXPTIME!,
-    }
-  );
-
-  const refreshToken = sign(
-    { id: user.id.toString(), userRole: user.user_role },
-    process.env.JWT_REFRESH_SECRET!,
-    {
-      expiresIn: process.env.EXPTIME!,
-    }
-  );
-
-  if (user.refresh_tokens.length > 6) {
-    // * id refresh tokens are above 6 then delete all previous refresh tokens
-    await deleteAllRefreshTokens(user.id);
-  }
-
-  const query = {
-    where: {
-      id: user.id,
-    },
-    data: {
-      refresh_tokens: { push: refreshToken },
-      last_login_time: new Date(),
-      last_active_time: new Date(),
-    },
-  };
-
-  await prisma.operators.update(query);
-
-  return { token, refreshToken };
-};
-
-// ! MOVE TO SEPERATE FILE
-const genarateOperatorRegistrationToken = async (id: number) => {
-  const token = await sign(
-    {
-      id: id.toString(),
-    },
-    process.env.JWT_SECRET!,
-    {
-      expiresIn: process.env.REG_EXPTIME!,
-    }
-  );
-
-  return token;
 };
 
 // * get operator by id
@@ -191,31 +125,8 @@ const findOperatorAndReplaceRefreshToken = async (
   return { refreshedUser, newRefreshToken, newToken };
 };
 
-const updateVerificationToken = async (
-  operatorId: number,
-  verificationCode: string
-) => {
-  const user = await prisma.operators.update({
-    where: { id: operatorId },
-    data: {
-      verfication_code: verificationCode,
-    },
-    select: {
-      id: true,
-      first_name: true,
-      last_name: true,
-      email: true,
-    },
-  });
-
-  return user;
-};
-
 export {
   getOperatorById,
   findOperatorByCredentials,
-  genarateOperatorAuthToken,
   findOperatorAndReplaceRefreshToken,
-  updateVerificationToken,
-  genarateOperatorRegistrationToken,
 };

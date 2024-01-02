@@ -1,14 +1,8 @@
 import { prisma } from '../../DB/prismaConfig';
 import { addUserFilter } from '../../Functions/filter_functions';
-import {
-  generateVerificationCode,
-  sendOperatorForgetPassword,
-  sendUserForgetPassword,
-} from '../../Functions/node_mailer';
-import {
-  isValidEmail,
-  validateNonEmptyStrings,
-} from '../../Helpers/stringValidation';
+import { sendUserForgetPassword } from '../../Functions/node_mailer';
+import { generateVerificationCode } from '../../Helpers/generateVerificationCode';
+import { isValidEmail } from '../../Helpers/stringValidation';
 import { IAddUserRequest } from '../../Types/OperatorRequestType';
 
 const updateEmailById = async (

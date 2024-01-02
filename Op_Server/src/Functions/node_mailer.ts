@@ -1,9 +1,5 @@
 import nodemailer from 'nodemailer';
 
-export function generateVerificationCode(): string {
-  return String(Math.floor(Math.random() * 900000000) + 100000000);
-}
-
 export async function sendOperatorRagistration(
   operatorId: number,
   recipient: string,
@@ -25,14 +21,14 @@ export async function sendOperatorRagistration(
     });
 
     let info = await transporter.sendMail({
-      from: '"Qader at DeviseHR 👻" <aqbaghi@atomiccode.uk>',
+      from: '"Qader at DeviseHR ðŸ‘»" <aqbaghi@atomiccode.uk>',
       to: recipient,
-      subject: 'DeviseHR Verification Code ✔',
+      subject: 'DeviseHR Verification Code âœ”',
       text: `<b>Dear ${firstName} ${lastName}, Your verification code is: ${code}</b>`,
       html: `
       <b>Dear ${firstName} ${lastName}, Your verification code is: ${code}</b>
       <p>Please follow the link bellow to register your account.</p>
-      <a href="http://localhost:${process.env.OP_CLIENT_PORT}/registration/register?operatorId=${operatorId}&code=${code}">Register your account</a>
+      <a href="http://localhost:${process.env.OP_CLIENT_PORT}/registration?operatorId=${operatorId}&code=${code}">Register your account</a>
       `,
     });
 
@@ -67,14 +63,14 @@ export async function sendUserRagistration(
     });
 
     let info = await transporter.sendMail({
-      from: '"Qader at DeviseHR 👻" <aqbaghi@atomiccode.uk>',
+      from: '"Qader at DeviseHR ðŸ‘»" <aqbaghi@atomiccode.uk>',
       to: recipient,
-      subject: 'DeviseHR Verification Code ✔',
+      subject: 'DeviseHR Verification Code âœ”',
       text: `<b>Dear ${firstName} ${lastName}, Your verification code is: ${code}</b>`,
       html: `
       <b>Dear ${firstName} ${lastName}, Your verification code is: ${code}</b>
       <p>Please follow the link bellow to register your account.</p>
-      <a href="http://localhost:${process.env.HR_CLIENT_PORT}/registration/register?userId=${userId}&code=${code}">Register your account</a>
+      <a href="http://localhost:${process.env.HR_CLIENT_PORT}/registration?userId=${userId}&code=${code}">Register your account</a>
       `,
     });
 
@@ -109,14 +105,14 @@ export async function sendOperatorForgetPassword(
     });
 
     let info = await transporter.sendMail({
-      from: '"Qader at DeviseHR 👻" <aqbaghi@atomiccode.uk>',
+      from: '"Qader at DeviseHR ðŸ‘»" <aqbaghi@atomiccode.uk>',
       to: recipient,
-      subject: 'DeviseHR Verification Code ✔',
+      subject: 'DeviseHR Verification Code âœ”',
       text: `<b>Dear ${firstName} ${lastName}, Your verification code is: ${code}</b>`,
       html: `
       <b>Dear ${firstName} ${lastName}, Your verification code is: ${code}</b>
       <p>Please follow the link bellow to Reset your password.</p>
-      <a href="http://localhost:${process.env.OP_CLIENT_PORT}/registration/forgotten-password?operatorId=${operatorId}&code=${code}">Reset your password</a>
+      <a href="http://localhost:${process.env.OP_CLIENT_PORT}/forgotten-password?operatorId=${operatorId}&code=${code}">Reset your password</a>
       `,
     });
 
@@ -151,9 +147,9 @@ export async function sendUserForgetPassword(
     });
 
     let info = await transporter.sendMail({
-      from: '"Qader at DeviseHR 👻" <aqbaghi@atomiccode.uk>',
+      from: '"Qader at DeviseHR ðŸ‘»" <aqbaghi@atomiccode.uk>',
       to: recipient,
-      subject: 'DeviseHR Verification Code ✔',
+      subject: 'DeviseHR Verification Code âœ”',
       text: `<b>Dear ${firstName} ${lastName}, Your verification code is: ${code}</b>`,
       html: `
       <b>Dear ${firstName} ${lastName}, Your verification code is: ${code}</b>

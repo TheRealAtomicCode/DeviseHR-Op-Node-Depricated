@@ -1,7 +1,6 @@
 import { Request, Response, Router } from 'express';
 import {
   findOperatorByCredentials,
-  genarateOperatorAuthToken,
   findOperatorAndReplaceRefreshToken,
 } from '../../Services/Operator-Services/operator_services';
 import auth from '../../Middleware/auth';
@@ -10,6 +9,7 @@ import {
   logMeOut,
   logMeOutAllDevices,
 } from '../../Services/Operator-Services/register_operator_services';
+import { genarateOperatorAuthToken } from '../../Functions/createTokens';
 
 const LogOperatorController = Router();
 
