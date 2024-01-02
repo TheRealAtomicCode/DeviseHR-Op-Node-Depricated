@@ -61,6 +61,7 @@ const findOperatorByCredentials = async (
   return user;
 };
 
+//! move to seperate file
 // * generate and add refresh token with jwt and add refresh token to db
 const genarateOperatorAuthToken = async (user: operators) => {
   const token = await sign(
@@ -104,6 +105,21 @@ const genarateOperatorAuthToken = async (user: operators) => {
   await prisma.operators.update(query);
 
   return { token, refreshToken };
+};
+
+// ! MOVE TO SEPERATE FILE
+const genarateOperatorRegistrationToken = async (id: number) => {
+  const token = await sign(
+    {
+      id: id.toString(),
+    },
+    process.env.JWT_SECRET!,
+    {
+      expiresIn: process.env.REG_EXPTIME!,
+    }
+  );
+
+  return token;
 };
 
 // * get operator by id
@@ -201,4 +217,5 @@ export {
   genarateOperatorAuthToken,
   findOperatorAndReplaceRefreshToken,
   updateVerificationToken,
+  genarateOperatorRegistrationToken,
 };

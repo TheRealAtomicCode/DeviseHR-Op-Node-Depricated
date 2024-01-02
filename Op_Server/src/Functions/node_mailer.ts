@@ -32,7 +32,7 @@ export async function sendOperatorRagistration(
       html: `
       <b>Dear ${firstName} ${lastName}, Your verification code is: ${code}</b>
       <p>Please follow the link bellow to register your account.</p>
-      <a href="http://localhost:5000/registration/register?operatorId=${operatorId}&code=${code}">Register your account</a>
+      <a href="http://localhost:${process.env.OP_CLIENT_PORT}/registration/register?operatorId=${operatorId}&code=${code}">Register your account</a>
       `,
     });
 
@@ -74,7 +74,7 @@ export async function sendUserRagistration(
       html: `
       <b>Dear ${firstName} ${lastName}, Your verification code is: ${code}</b>
       <p>Please follow the link bellow to register your account.</p>
-      <a href="http://localhost:5010/registration/register?userId=${userId}&code=${code}">Register your account</a>
+      <a href="http://localhost:${process.env.HR_CLIENT_PORT}/registration/register?userId=${userId}&code=${code}">Register your account</a>
       `,
     });
 
@@ -116,7 +116,7 @@ export async function sendOperatorForgetPassword(
       html: `
       <b>Dear ${firstName} ${lastName}, Your verification code is: ${code}</b>
       <p>Please follow the link bellow to Reset your password.</p>
-      <a href="http://localhost:5000/registration/forgotten-password?operatorId=${operatorId}&code=${code}">Reset your password</a>
+      <a href="http://localhost:${process.env.OP_CLIENT_PORT}/registration/forgotten-password?operatorId=${operatorId}&code=${code}">Reset your password</a>
       `,
     });
 
@@ -158,7 +158,7 @@ export async function sendUserForgetPassword(
       html: `
       <b>Dear ${firstName} ${lastName}, Your verification code is: ${code}</b>
       <p>Please follow the link bellow to Reset your password.</p>
-      <a href="http://localhost:5010/registration/forgotten-password?userId=${userId}&code=${code}">Reset your password</a>
+      <a href="http://localhost:${process.env.HR_CLIENT_PORT}/registration/forgotten-password?userId=${userId}&code=${code}">Reset your password</a>
       `,
     });
 

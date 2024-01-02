@@ -25,6 +25,8 @@ const getAndCheckRegistrationProfile = async (
       },
     };
     user = await prisma.operators.findUnique(query);
+
+    if (!user) throw new Error('Invalid Request');
   } catch (err: any) {
     throw new Error('Failed to locate operator.');
   }
