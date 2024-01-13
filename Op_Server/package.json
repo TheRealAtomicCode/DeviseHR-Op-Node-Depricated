@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "seed": "node seed.js",
+    "seed": "node src/SeedDB.js",
+    "migrateSql": "node src/MigrateSql.js",
     "scaffold": "npx prisma db pull",
-    "resetdb": "npm run seed && npm run scaffold && npx prisma db pull && npx prisma generate",
+    "resetdb": "npm run migrateSql && npm run seed && npm run scaffold && npx prisma db pull && npx prisma generate",
     "dev": "nodemon",
     "build": "rimraf ./dist && tsc",
     "start": "npm run build && node dist/index.js"

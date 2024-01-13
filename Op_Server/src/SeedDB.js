@@ -56,8 +56,8 @@ async function seed() {
       await client.query(opquery, opvalues);
 
       const companiesquery = `
-  INSERT INTO companies (name, licence_number, phone_number, expiration_date, added_by_operator, max_users_allowed, account_number)
-  VALUES ($1, $2, $3, $4, $5, $6, $7)
+  INSERT INTO companies (name, licence_number, phone_number, expiration_date, added_by_operator, max_users_allowed, account_number, annual_leave_start_date)
+  VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
   RETURNING id;
 `;
 
@@ -69,6 +69,7 @@ async function seed() {
         1,
         20,
         '22222',
+        '1970-01-01',
       ];
 
       const company2Values = [
@@ -79,6 +80,7 @@ async function seed() {
         1,
         20,
         '22221',
+        '1970-01-01',
       ];
 
       const { rows } = await client.query(
@@ -88,8 +90,8 @@ async function seed() {
       let companyId = rows[0].id;
 
       const userQuery = `
-  INSERT INTO users (first_name, last_name, email, added_by_user, added_by_operator, user_role, password_hash, is_verified, company_id)
-  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
+  INSERT INTO users (first_name, last_name, email, added_by_user, added_by_operator, user_role, password_hash, is_verified, company_id, annual_leave_start_date)
+  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);
 `;
 
       const userValues = [
@@ -102,14 +104,15 @@ async function seed() {
         hashedPassword,
         true,
         companyId,
+        '1970-01-01',
       ];
 
       await client.query(userQuery, userValues);
       console.log('User inserted successfully 1 company 1.');
 
       const user2Query = `
-  INSERT INTO users (first_name, last_name, email, added_by_user, added_by_operator, user_role, password_hash, is_verified, company_id)
-  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
+  INSERT INTO users (first_name, last_name, email, added_by_user, added_by_operator, user_role, password_hash, is_verified, company_id, annual_leave_start_date)
+  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);
 `;
 
       const user2Values = [
@@ -122,6 +125,7 @@ async function seed() {
         hashedPassword,
         true,
         companyId,
+        '1970-01-01',
       ];
 
       await client.query(user2Query, user2Values);
@@ -132,8 +136,8 @@ async function seed() {
       companyId = roo.rows[0].id;
 
       const user3Query = `
-  INSERT INTO users (first_name, last_name, email, added_by_user, added_by_operator, user_role, password_hash, is_verified, company_id)
-  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
+  INSERT INTO users (first_name, last_name, email, added_by_user, added_by_operator, user_role, password_hash, is_verified, company_id, annual_leave_start_date)
+  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);
 `;
 
       const user3Values = [
@@ -146,14 +150,15 @@ async function seed() {
         hashedPassword,
         true,
         companyId,
+        '1970-01-01',
       ];
 
       await client.query(user3Query, user3Values);
       console.log('User inserted successfully 3 company 3.');
 
       const user4Query = `
-      INSERT INTO users (first_name, last_name, email, added_by_user, added_by_operator, user_role, password_hash, is_verified, company_id)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
+      INSERT INTO users (first_name, last_name, email, added_by_user, added_by_operator, user_role, password_hash, is_verified, company_id, annual_leave_start_date)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);
     `;
 
       const user4Values = [
@@ -166,6 +171,7 @@ async function seed() {
         hashedPassword,
         true,
         companyId,
+        '1970-01-01',
       ];
 
       await client.query(user4Query, user4Values);

@@ -55,6 +55,7 @@ const addUserToCompany = async (
         added_by_user: 0,
         user_role: reqBody.userRole,
         company_id: reqBody.companyId,
+        annual_leave_start_date: '1970-01-01',
       },
       select: {
         id: true,

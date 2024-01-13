@@ -46,6 +46,7 @@ export const createCompany = async (
         added_by_operator: myId,
         max_users_allowed: reqBody.maxEmployeesAllowed,
         account_number: reqBody.accountNumber,
+        annual_leave_start_date: '1970-01-01',
         users: {
           create: {
             first_name: reqBody.firstName,
@@ -54,6 +55,7 @@ export const createCompany = async (
             added_by_user: 0,
             added_by_operator: myId,
             user_role: 'admin',
+            annual_leave_start_date: '1970-01-01',
           },
         },
       },
