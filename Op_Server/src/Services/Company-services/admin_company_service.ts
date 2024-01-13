@@ -42,11 +42,11 @@ export const createCompany = async (
         name: reqBody.companyName,
         licence_number: reqBody.licenceNumber,
         phone_number: reqBody.phoneNumber,
-        expiration_date: reqBody.expirationDate,
+        expiration_date: reqBody.expirationDate + 'T23:59:59Z',
         added_by_operator: myId,
         max_users_allowed: reqBody.maxEmployeesAllowed,
         account_number: reqBody.accountNumber,
-        annual_leave_start_date: '1970-01-01',
+        annual_leave_start_date: '1970-01-01T00:00:00.000Z',
         users: {
           create: {
             first_name: reqBody.firstName,
@@ -55,7 +55,7 @@ export const createCompany = async (
             added_by_user: 0,
             added_by_operator: myId,
             user_role: 'admin',
-            annual_leave_start_date: '1970-01-01',
+            annual_leave_start_date: '1970-01-01T00:00:00.000Z',
           },
         },
       },
@@ -80,9 +80,7 @@ export const createCompany = async (
       },
     });
   } catch (err: any) {
-    throw new Error(
-      'Failed to create company as user email, or company account number already exists.'
-    );
+    return err;
   }
 
   try {
@@ -95,9 +93,7 @@ export const createCompany = async (
       },
     });
   } catch (err: any) {
-    throw new Error(
-      'An error occured while updating the main contact to the company.'
-    );
+    return err.message;
   }
 
   return company;

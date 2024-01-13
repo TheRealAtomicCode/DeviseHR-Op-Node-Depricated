@@ -33,6 +33,14 @@ const getCompanyWithUserById = async (id: number) => {
           role_id: true,
           user_role: true,
         },
+        orderBy: [
+          {
+            first_name: 'asc',
+          },
+          {
+            last_name: 'asc',
+          },
+        ],
       },
     },
   });
